@@ -1,4 +1,5 @@
 {
+  "name": "next-sanity-unknown-foundation",
   "private": true,
   "scripts": {
     "predev": "npm run typegen",

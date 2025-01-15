@@ -1,7 +1,6 @@
-import { CogIcon } from "@sanity/icons";
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { CogIcon } from "@sanity/icons"
+import { defineField, defineType } from "sanity"
 
-import * as demo from "@/sanity/lib/demo";
 
 export default defineType({
   name: "settings",
@@ -11,72 +10,17 @@ export default defineType({
   fields: [
     defineField({
       name: "title",
-      description: "This field is the title of your blog.",
+      description: "This field is used for the title template in the metadata.",
       title: "Title",
       type: "string",
-      initialValue: demo.title,
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "description",
-      description:
-        "Used both for the <meta> description tag for SEO, and the blog subheader.",
+      description: "This field is used for the description in the metadata and is the default if a document has no description.",
       title: "Description",
-      type: "array",
-      initialValue: demo.description,
-      of: [
-        defineArrayMember({
-          type: "block",
-          options: {},
-          styles: [],
-          lists: [],
-          marks: {
-            decorators: [],
-            annotations: [
-              defineField({
-                type: "object",
-                name: "link",
-                fields: [
-                  {
-                    type: "string",
-                    name: "href",
-                    title: "URL",
-                    validation: (rule) => rule.required(),
-                  },
-                ],
-              }),
-            ],
-          },
-        }),
-      ],
-    }),
-    defineField({
-      name: "footer",
-      description:
-        "This is a block of text that will be displayed at the bottom of the page.",
-      title: "Footer Info",
-      type: "array",
-      of: [
-        defineArrayMember({
-          type: "block",
-          marks: {
-            annotations: [
-              {
-                name: "link",
-                type: "object",
-                title: "Link",
-                fields: [
-                  {
-                    name: "href",
-                    type: "url",
-                    title: "Url",
-                  },
-                ],
-              },
-            ],
-          },
-        }),
-      ],
+      type: "string",
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "ogImage",
@@ -98,24 +42,12 @@ export default defineType({
           validation: (rule) => {
             return rule.custom((alt, context) => {
               if ((context.document?.ogImage as any)?.asset?._ref && !alt) {
-                return "Required";
+                return "Required"
               }
-              return true;
-            });
+              return true
+            })
           },
-        }),
-        defineField({
-          name: "metadataBase",
-          type: "url",
-          description: (
-            <a
-              href="https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase"
-              rel="noreferrer noopener"
-            >
-              More information
-            </a>
-          ),
-        }),
+        })
       ],
     }),
   ],
@@ -123,7 +55,7 @@ export default defineType({
     prepare() {
       return {
         title: "Settings",
-      };
+      }
     },
   },
-});
+})

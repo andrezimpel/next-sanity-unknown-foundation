@@ -1,8 +1,10 @@
-import { DocumentTextIcon } from "@sanity/icons";
-import { format, parseISO } from "date-fns";
-import { defineField, defineType } from "sanity";
+import { DocumentTextIcon } from "@sanity/icons"
+import { format, parseISO } from "date-fns"
+import { defineField, defineType } from "sanity"
 
-import authorType from "./author";
+import blockStyles from "../block-styles"
+import metafields from "../metafields"
+import authorType from "./author"
 
 /**
  * This file is the schema definition for a post.
@@ -26,13 +28,14 @@ export default defineType({
       name: "title",
       title: "Title",
       type: "string",
+      description: "The title of the post.",
       validation: (rule) => rule.required(),
     }),
     defineField({
       name: "slug",
       title: "Slug",
       type: "slug",
-      description: "A slug is required for the post to show up in the preview",
+      description: "A unique identifier for the post, used in URLs.",
       options: {
         source: "title",
         maxLength: 96,
@@ -44,17 +47,20 @@ export default defineType({
       name: "content",
       title: "Content",
       type: "array",
-      of: [{ type: "block" }],
+      description: "The main content of the post.",
+      of: blockStyles,
     }),
     defineField({
       name: "excerpt",
       title: "Excerpt",
       type: "text",
+      description: "A short summary of the post.",
     }),
     defineField({
       name: "coverImage",
       title: "Cover Image",
       type: "image",
+      description: "The main image for the post.",
       options: {
         hotspot: true,
         aiAssist: {
@@ -66,14 +72,14 @@ export default defineType({
           name: "alt",
           type: "string",
           title: "Alternative text",
-          description: "Important for SEO and accessiblity.",
+          description: "Text for screen readers and SEO.",
           validation: (rule) => {
             return rule.custom((alt, context) => {
               if ((context.document?.coverImage as any)?.asset?._ref && !alt) {
-                return "Required";
+                return "Required"
               }
-              return true;
-            });
+              return true
+            })
           },
         },
       ],
@@ -83,14 +89,17 @@ export default defineType({
       name: "date",
       title: "Date",
       type: "datetime",
+      description: "The publication date of the post.",
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
       name: "author",
       title: "Author",
       type: "reference",
+      description: "The author of the post.",
       to: [{ type: authorType.name }],
     }),
+    ...metafields
   ],
   preview: {
     select: {
@@ -103,9 +112,9 @@ export default defineType({
       const subtitles = [
         author && `by ${author}`,
         date && `on ${format(parseISO(date), "LLL d, yyyy")}`,
-      ].filter(Boolean);
+      ].filter(Boolean)
 
-      return { title, media, subtitle: subtitles.join(" ") };
+      return { title, media, subtitle: subtitles.join(" ") }
     },
   },
-});
+})
