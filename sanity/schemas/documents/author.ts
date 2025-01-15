@@ -1,5 +1,5 @@
-import { UserIcon } from "@sanity/icons";
-import { defineField, defineType } from "sanity";
+import { UserIcon } from "@sanity/icons"
+import { defineField, defineType } from "sanity"
 
 export default defineType({
   name: "author",
@@ -14,6 +14,11 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "position",
+      title: "Position",
+      type: "string",
+    }),
+    defineField({
       name: "picture",
       title: "Picture",
       type: "image",
@@ -26,10 +31,10 @@ export default defineType({
           validation: (rule) => {
             return rule.custom((alt, context) => {
               if ((context.document?.picture as any)?.asset?._ref && !alt) {
-                return "Required";
+                return "Required"
               }
-              return true;
-            });
+              return true
+            })
           },
         },
       ],
@@ -42,4 +47,4 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
   ],
-});
+})

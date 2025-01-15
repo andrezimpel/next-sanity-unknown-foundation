@@ -27,7 +27,7 @@ export const postsQuery = defineQuery(`
     excerpt,
     coverImage,
     "date": coalesce(date, _updatedAt),
-    "author": author->{"name": coalesce(name, "Anonymous"), picture}
+    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}
   }
 `)
 
@@ -40,7 +40,7 @@ export const postQuery = defineQuery(`
     content,
     coverImage,
     "date": coalesce(date, _updatedAt),
-    "author": author->{"name": coalesce(name, "Anonymous"), picture},
+    "author": author->{"name": coalesce(name, "Anonymous"), picture, position},
     ${metafields}
   }
 `)
