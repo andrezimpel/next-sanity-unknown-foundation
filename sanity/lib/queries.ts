@@ -20,7 +20,7 @@ export const postsPathsQuery = defineQuery(`
 `)
 
 export const postsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
+  *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {
     _id,
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
@@ -42,5 +42,17 @@ export const postQuery = defineQuery(`
     "date": coalesce(date, _updatedAt),
     "author": author->{"name": coalesce(name, "Anonymous"), picture, position},
     ${metafields}
+  }
+`)
+
+export const moreStoriesQuery = defineQuery(`
+  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
+    _id,
+    "title": coalesce(title, "Untitled"),
+    "slug": slug.current,
+    excerpt,
+    coverImage,
+    "date": coalesce(date, _updatedAt),
+    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}
   }
 `)
