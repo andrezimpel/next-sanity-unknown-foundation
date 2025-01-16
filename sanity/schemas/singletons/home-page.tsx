@@ -23,7 +23,7 @@ export default defineType({
       description: "The title of the home page.",
       validation: (rule) => rule.required(),
     }),
-    ...metafields
+    ...metafields()
   ],
   preview: {
     select: {

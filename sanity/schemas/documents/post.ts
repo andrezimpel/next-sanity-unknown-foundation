@@ -99,7 +99,7 @@ export default defineType({
       description: "The author of the post.",
       to: [{ type: authorType.name }],
     }),
-    ...metafields
+    ...metafields()
   ],
   preview: {
     select: {

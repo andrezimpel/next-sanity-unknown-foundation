@@ -19,7 +19,7 @@ export default defineType({
       name: "description",
       description: "This field is used for the description in the metadata and is the default if a document has no description.",
       title: "Description",
-      type: "string",
+      type: "text",
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -32,23 +32,7 @@ export default defineType({
         aiAssist: {
           imageDescriptionField: "alt",
         },
-      },
-      fields: [
-        defineField({
-          name: "alt",
-          description: "Important for accessibility and SEO.",
-          title: "Alternative text",
-          type: "string",
-          validation: (rule) => {
-            return rule.custom((alt, context) => {
-              if ((context.document?.ogImage as any)?.asset?._ref && !alt) {
-                return "Required"
-              }
-              return true
-            })
-          },
-        })
-      ],
+      }
     }),
   ],
   preview: {
