@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
     // Metadata should never contain stega
     stega: false,
   })
-  const title = settings?.title
+  const title = settings?.title || "Replace this title"
   const description = settings?.description
 
   const ogImage = resolveOpenGraphImage(settings?.ogImage)
@@ -32,15 +32,17 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch {
     // ignore
   }
+
   return {
     metadataBase,
     title: {
       template: `%s | ${title}`,
-      default: title || "Replace this title",
+      default: title,
     },
     description: description,
     openGraph: {
       images: ogImage ? [ogImage] : [],
+      ...(settings?.title && { title: settings.title }),
     },
     robots: {
       index: true,
@@ -59,19 +61,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const data = await sanityFetch({ query: settingsQuery })
   const { isEnabled: isDraftMode } = await draftMode()
 
   return (
     <html lang="de" className={`${inter.variable} bg-white text-black`}>
       <body>
-        <section className="min-h-screen">
-          {isDraftMode && <AlertBanner />}
-          <main>{children}</main>
-          <footer className="bg-accent-1 border-accent-2 border-t">
-            footer
-          </footer>
-        </section>
+        {isDraftMode && <AlertBanner />}
+        <header className="container">
+          header
+        </header>
+        <main className="container">{children}</main>
+        <footer>
+          footer
+        </footer>
         {isDraftMode && <VisualEditing />}
         <SpeedInsights />
       </body>

@@ -80,7 +80,7 @@ export default defineConfig({
       },
       previewUrl: { previewMode: { enable: "/api/draft-mode/enable" } },
     }),
-    structureTool({ structure: pageStructure([...singletons, ...documents]) }),
+    structureTool({ structure: pageStructure([...singletons]) }),
     // Configures the global "new document" button, and document actions, to suit the Settings document singleton
     singletonPlugin([settings.name, homePage.name]),
     // Add an image asset source for Unsplash

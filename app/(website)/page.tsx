@@ -1,20 +1,24 @@
 import { sanityFetch } from "@/sanity/lib/fetch"
-import { homePageQuery } from "@/sanity/lib/queries"
+import { homePageQuery, settingsQuery } from "@/sanity/lib/queries"
 import { resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Metadata } from 'next'
 
 const fetchHomePage = async () => {
-  return sanityFetch({ query: homePageQuery })
+  return await Promise.all([
+    sanityFetch({ query: homePageQuery }),
+    sanityFetch({ query: settingsQuery, stega: false }),
+  ])
 }
 
 // Function to generate metadata
 export async function generateMetadata(): Promise<Metadata> {
-  const homePage = await fetchHomePage()
+  const [homePage, settings] = await fetchHomePage()
 
   const ogImage = resolveOpenGraphImage(homePage?.ogImage)
+  const title = `${homePage?.title} | ${settings?.title}`
 
   return {
-    ...(homePage?.title && { title: homePage.title }),
+    title,
     ...(homePage?.metaDescription && { description: homePage.metaDescription }),
     openGraph: {
       ...(homePage?.ogTitle && { title: homePage.ogTitle }),
@@ -31,7 +35,7 @@ export default async function Page() {
 
   return (
     <div className="container mx-auto px-5">
-      this is the home page: {page?.title}
+      this is the home page: {page[0]?.title}
     </div>
   )
 }

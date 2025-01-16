@@ -156,6 +156,7 @@ export type Author = {
   _updatedAt: string;
   _rev: string;
   name?: string;
+  position?: string;
   picture?: {
     asset?: {
       _ref: string;
@@ -193,7 +194,6 @@ export type Settings = {
     };
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt?: string;
     _type: "image";
   };
 };
@@ -422,7 +422,6 @@ export type SettingsQueryResult = {
     };
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt?: string;
     _type: "image";
   };
 } | null;
@@ -458,7 +457,7 @@ export type PostsPathsQueryResult = Array<{
   slug: string | null;
 }>;
 // Variable: postsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture}  }
+// Query: *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
 export type PostsQueryResult = Array<{
   _id: string;
   title: string | "Untitled";
@@ -491,10 +490,11 @@ export type PostsQueryResult = Array<{
       alt?: string;
       _type: "image";
     } | null;
+    position: string | null;
   } | null;
 }>;
 // Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture},      metaTitle,  metaDescription,  ogImage,  noIndex  }
+// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position},      metaTitle,  metaDescription,  ogImage,  noIndex  }
 export type PostQueryResult = {
   _id: string;
   title: string | "Untitled";
@@ -558,6 +558,7 @@ export type PostQueryResult = {
       alt?: string;
       _type: "image";
     } | null;
+    position: string | null;
   } | null;
   metaTitle: null;
   metaDescription: string | null;
@@ -575,12 +576,42 @@ export type PostQueryResult = {
   } | null;
   noIndex: boolean | null;
 } | null;
-
-// Source: ./app/(website)/posts/[slug]/page.tsx
-// Variable: postSlugs
-// Query: *[_type == "post" && defined(slug.current)]{"slug": slug.current}
-export type PostSlugsResult = Array<{
+// Variable: moreStoriesQuery
+// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
+export type MoreStoriesQueryResult = Array<{
+  _id: string;
+  title: string | "Untitled";
   slug: string | null;
+  excerpt: string | null;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  date: string;
+  author: {
+    name: string | "Anonymous";
+    picture: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    position: string | null;
+  } | null;
 }>;
 
 // Query TypeMap
@@ -590,8 +621,8 @@ declare module "@sanity/client" {
     "*[_type == \"settings\"][0]": SettingsQueryResult;
     "*[_type == \"homePage\"][0] {\n  ...,\n  \n  metaTitle,\n  metaDescription,\n  ogImage,\n  noIndex\n\n}": HomePageQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current\n  }\n": PostsPathsQueryResult;
-    "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture}\n  }\n": PostsQueryResult;
-    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture},\n    \n  metaTitle,\n  metaDescription,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
-    "*[_type == \"post\" && defined(slug.current)]{\"slug\": slug.current}": PostSlugsResult;
+    "\n  *[_type == \"post\" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": PostsQueryResult;
+    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position},\n    \n  metaTitle,\n  metaDescription,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
+    "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": MoreStoriesQueryResult;
   }
 }

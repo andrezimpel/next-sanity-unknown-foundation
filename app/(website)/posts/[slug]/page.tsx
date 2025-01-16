@@ -1,67 +1,38 @@
-import { defineQuery } from "next-sanity";
-import type { Metadata, ResolvingMetadata } from "next";
-import { type PortableTextBlock } from "next-sanity";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { type PortableTextBlock } from "next-sanity"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+import { Suspense } from "react"
 
-import Avatar from "../../avatar";
-import CoverImage from "../../cover-image";
-import DateComponent from "../../date";
-import MoreStories from "../../more-stories";
-import PortableText from "../../portable-text";
+import CoverImage from "@/components/cover-image"
+import DateComponent from "@/components/date"
+import PortableText from "../../portable-text"
+import Avatar from "./avatar"
+import MoreStories from "./more-posts"
 
-import * as demo from "@/sanity/lib/demo";
-import { sanityFetch } from "@/sanity/lib/fetch";
-import { postQuery, settingsQuery } from "@/sanity/lib/queries";
-import { resolveOpenGraphImage } from "@/sanity/lib/utils";
+import * as demo from "@/sanity/lib/demo"
+import { sanityFetch } from "@/sanity/lib/fetch"
+import { postQuery, settingsQuery } from "@/sanity/lib/queries"
 
 type Props = {
-  params: Promise<{ slug: string }>;
-};
-
-const postSlugs = defineQuery(
-  `*[_type == "post" && defined(slug.current)]{"slug": slug.current}`,
-);
-
-export async function generateStaticParams() {
-  return await sanityFetch({
-    query: postSlugs,
-    perspective: "published",
-    stega: false,
-  });
+  params: Promise<{ slug: string }>
 }
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const post = await sanityFetch({
-    query: postQuery,
-    params,
-    stega: false,
-  });
-  const previousImages = (await parent).openGraph?.images || [];
-  const ogImage = resolveOpenGraphImage(post?.coverImage);
-
-  return {
-    authors: post?.author?.name ? [{ name: post?.author?.name }] : [],
-    title: post?.title,
-    description: post?.excerpt,
-    openGraph: {
-      images: ogImage ? [ogImage, ...previousImages] : previousImages,
-    },
-  } satisfies Metadata;
-}
+// export async function generateStaticParams() {
+//   return await sanityFetch({
+//     query: postsPathsQuery,
+//     perspective: "published",
+//     stega: false,
+//   })
+// }
 
 export default async function PostPage({ params }: Props) {
   const [post, settings] = await Promise.all([
     sanityFetch({ query: postQuery, params }),
     sanityFetch({ query: settingsQuery }),
-  ]);
+  ])
 
   if (!post?._id) {
-    return notFound();
+    return notFound()
   }
 
   return (
@@ -81,7 +52,7 @@ export default async function PostPage({ params }: Props) {
           )}
         </div>
         <div className="mb-8 sm:mx-0 md:mb-16">
-          <CoverImage image={post.coverImage} priority />
+          <CoverImage image={post.coverImage} priority height={1000} width={2000} />
         </div>
         <div className="mx-auto max-w-2xl">
           <div className="mb-6 block md:hidden">
@@ -108,9 +79,9 @@ export default async function PostPage({ params }: Props) {
           Recent Stories
         </h2>
         <Suspense>
-          <MoreStories skip={post._id} limit={2} />
+          <MoreStories slug={post.slug || ""} from={0} to={3} />
         </Suspense>
       </aside>
     </div>
-  );
+  )
 }
