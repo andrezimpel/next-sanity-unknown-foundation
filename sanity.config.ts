@@ -20,6 +20,8 @@ import { pageStructure, singletonPlugin } from "@/sanity/plugins/settings"
 import author from "@/sanity/schemas/documents/author"
 import post from "@/sanity/schemas/documents/post"
 import settings from "@/sanity/schemas/singletons/settings"
+import navigationZone from "./sanity/schemas/documents/navigation-zone"
+import page from "./sanity/schemas/documents/page"
 import youtube from "./sanity/schemas/objects/youtube"
 import homePage from "./sanity/schemas/singletons/home-page"
 
@@ -29,7 +31,7 @@ const homeLocation = {
 } satisfies DocumentLocation
 
 const singletons = [homePage, settings]
-const documents = [post, author]
+const documents = [page, post, author, navigationZone]
 const objects = [youtube]
 
 export default defineConfig({
@@ -82,7 +84,7 @@ export default defineConfig({
     }),
     structureTool({ structure: pageStructure([...singletons]) }),
     // Configures the global "new document" button, and document actions, to suit the Settings document singleton
-    singletonPlugin([settings.name, homePage.name]),
+    singletonPlugin(singletons.map((singleton) => singleton.name)),
     // Add an image asset source for Unsplash
     unsplashImageAsset(),
     // Sets up AI Assist with preset prompts
