@@ -14,6 +14,7 @@ import { sanityFetch } from "@/sanity/lib/fetch"
 import { settingsQuery } from "@/sanity/lib/queries"
 import { resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Suspense } from "react"
+import { Footer } from "./footer"
 import { Header } from "./header"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -73,9 +74,9 @@ export default async function RootLayout({
           <Header />
         </Suspense>
         <main>{children}</main>
-        <footer className="container border-t border-gray-200 py-6">
-          footer
-        </footer>
+        <Suspense>
+          <Footer />
+        </Suspense>
         {isDraftMode && <VisualEditing />}
         <SpeedInsights />
       </body>

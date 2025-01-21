@@ -2,22 +2,22 @@ import { sanityFetch } from "@/sanity/lib/fetch"
 import { navigationZoneQuery, settingsQuery } from "@/sanity/lib/queries"
 import Link from "next/link"
 
-export async function Header() {
+export async function Footer() {
   const [settings, navigationZone] = await Promise.all([
     sanityFetch({ query: settingsQuery }),
     sanityFetch({
       query: navigationZoneQuery,
       params: {
-        identifier: "header",
+        identifier: "legal",
       },
     })
   ])
 
   return (
-    <header className="container border-b border-gray-200 py-6 flex justify-between items-center">
-      <Link href="/" className="text-lg font-bold uppercase">
-        {settings?.title || "Untitled"}
-      </Link>
+    <footer className="container border-t border-gray-200 py-6 flex justify-between items-center text-sm">
+      <div>
+        Ⓒ {new Date().getFullYear()} {settings?.title || "Untitled"}
+      </div>
       <nav>
         {navigationZone?.items?.map((item, index) => (
           <Link key={item?._key || index} href={item?.link?.slug || item?.url || ""} className="px-2 py-1">
@@ -25,6 +25,6 @@ export async function Header() {
           </Link>
         ))}
       </nav>
-    </header>
+    </footer>
   )
 }
