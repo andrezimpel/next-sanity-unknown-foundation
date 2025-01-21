@@ -73,6 +73,32 @@ export type YouTube = {
   url?: string;
 };
 
+export type NavigationZone = {
+  _id: string;
+  _type: "navigationZone";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  identifier?: string;
+  items?: Array<{
+    title?: string;
+    link?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "post";
+    } | {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "page";
+    };
+    url?: string;
+    _type: "navigationItem";
+    _key: string;
+  }>;
+};
+
 export type Post = {
   _id: string;
   _type: "post";
@@ -169,6 +195,74 @@ export type Author = {
     alt?: string;
     _type: "image";
   };
+};
+
+export type Page = {
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  content?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  } | {
+    _key: string;
+  } & YouTube>;
+  coverImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  metaDescription?: string;
+  ogTitle?: string;
+  ogImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  noIndex?: boolean;
 };
 
 export type Slug = {
@@ -400,7 +494,7 @@ export type SanityAssistSchemaTypeField = {
   } & SanityAssistInstruction>;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | YouTube | Post | Author | Slug | Settings | HomePage | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | YouTube | NavigationZone | Post | Author | Page | Slug | Settings | HomePage | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -426,7 +520,7 @@ export type SettingsQueryResult = {
   };
 } | null;
 // Variable: homePageQuery
-// Query: *[_type == "homePage"][0] {  ...,    metaTitle,  metaDescription,  ogImage,  noIndex}
+// Query: *[_type == "homePage"][0] {  ...,    metaDescription,  ogTitle,  ogImage,  noIndex}
 export type HomePageQueryResult = {
   _id: string;
   _type: "homePage";
@@ -435,7 +529,7 @@ export type HomePageQueryResult = {
   _rev: string;
   title?: string;
   metaDescription: string | null;
-  ogTitle?: string;
+  ogTitle: string | null;
   ogImage: {
     asset?: {
       _ref: string;
@@ -449,7 +543,6 @@ export type HomePageQueryResult = {
     _type: "image";
   } | null;
   noIndex: boolean | null;
-  metaTitle: null;
 } | null;
 // Variable: postsPathsQuery
 // Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current  }
@@ -494,7 +587,7 @@ export type PostsQueryResult = Array<{
   } | null;
 }>;
 // Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position},      metaTitle,  metaDescription,  ogImage,  noIndex  }
+// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position},      metaDescription,  ogTitle,  ogImage,  noIndex  }
 export type PostQueryResult = {
   _id: string;
   title: string | "Untitled";
@@ -560,8 +653,8 @@ export type PostQueryResult = {
     } | null;
     position: string | null;
   } | null;
-  metaTitle: null;
   metaDescription: string | null;
+  ogTitle: string | null;
   ogImage: {
     asset?: {
       _ref: string;
@@ -613,16 +706,234 @@ export type MoreStoriesQueryResult = Array<{
     position: string | null;
   } | null;
 }>;
+// Variable: navigationZoneQuery
+// Query: *[_type == "navigationZone" && identifier == $identifier][0] {    items[] {      ...,      link->{        ...,        title,        "slug": slug.current,      }    }  }
+export type NavigationZoneQueryResult = {
+  items: Array<{
+    title?: string;
+    link: {
+      _id: string;
+      _type: "page";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      title: string | null;
+      slug: string | null;
+      content?: Array<{
+        _key: string;
+      } & YouTube | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      } | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }>;
+      coverImage?: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+      };
+      metaDescription?: string;
+      ogTitle?: string;
+      ogImage?: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+      };
+      noIndex?: boolean;
+    } | {
+      _id: string;
+      _type: "post";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      title: string | null;
+      slug: string | null;
+      content?: Array<{
+        _key: string;
+      } & YouTube | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      } | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }>;
+      excerpt?: string;
+      coverImage?: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+      };
+      date?: string;
+      author?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "author";
+      };
+      metaDescription?: string;
+      ogTitle?: string;
+      ogImage?: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+      };
+      noIndex?: boolean;
+    } | null;
+    url?: string;
+    _type: "navigationItem";
+    _key: string;
+  }> | null;
+} | null;
+// Variable: pageQuery
+// Query: *[_type == "page" && slug.current == $slug] [0] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    content,    coverImage,      metaDescription,  ogTitle,  ogImage,  noIndex  }
+export type PageQueryResult = {
+  _id: string;
+  title: string | "Untitled";
+  slug: string | null;
+  content: Array<{
+    _key: string;
+  } & YouTube | {
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }> | null;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  metaDescription: string | null;
+  ogTitle: string | null;
+  ogImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  noIndex: boolean | null;
+} | null;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"settings\"][0]": SettingsQueryResult;
-    "*[_type == \"homePage\"][0] {\n  ...,\n  \n  metaTitle,\n  metaDescription,\n  ogImage,\n  noIndex\n\n}": HomePageQueryResult;
+    "*[_type == \"homePage\"][0] {\n  ...,\n  \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n}": HomePageQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current\n  }\n": PostsPathsQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": PostsQueryResult;
-    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position},\n    \n  metaTitle,\n  metaDescription,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
+    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position},\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
     "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": MoreStoriesQueryResult;
+    "\n  *[_type == \"navigationZone\" && identifier == $identifier][0] {\n    items[] {\n      ...,\n      link->{\n        ...,\n        title,\n        \"slug\": slug.current,\n      }\n    }\n  }\n": NavigationZoneQueryResult;
+    "\n  *[_type == \"page\" && slug.current == $slug] [0] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    content,\n    coverImage,\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PageQueryResult;
   }
 }
