@@ -13,6 +13,8 @@ import AlertBanner from "./alert-banner"
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { settingsQuery } from "@/sanity/lib/queries"
 import { resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { Suspense } from "react"
+import { Header } from "./header"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await sanityFetch({
@@ -65,13 +67,13 @@ export default async function RootLayout({
 
   return (
     <html lang="de" className={`${inter.variable} bg-white text-black`}>
-      <body>
+      <body className="space-y-12">
         {isDraftMode && <AlertBanner />}
-        <header className="container">
-          header
-        </header>
-        <main className="container">{children}</main>
-        <footer>
+        <Suspense>
+          <Header />
+        </Suspense>
+        <main>{children}</main>
+        <footer className="container border-t border-gray-200 py-6">
           footer
         </footer>
         {isDraftMode && <VisualEditing />}
