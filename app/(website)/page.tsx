@@ -30,12 +30,12 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function Page() {
+export default async function HomePage() {
   const page = await fetchHomePage()
 
   return (
     <div className="container mx-auto px-5">
-      this is the home page: {page[0]?.title}
+      this is the home page: <h1>{page[0]?.title}</h1>
     </div>
   )
 }
