@@ -18,6 +18,7 @@ export default function CoverImage(props: CoverImageProps) {
       height={height}
       alt={source?.alt || ""}
       src={urlForImage(source)?.height(height).width(width).url() as string}
+      blurDataURL={urlForImage(source)?.height(10).width(10).blur(10).url() as string}
       sizes="100vw"
       priority={priority}
     />
