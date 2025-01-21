@@ -74,8 +74,7 @@ export default defineType({
             })
           },
         },
-      ],
-      validation: (rule) => rule.required(),
+      ]
     }),
     ...metafields()
   ],

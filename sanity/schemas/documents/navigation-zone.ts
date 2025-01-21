@@ -21,6 +21,18 @@ export default defineType({
           type: 'object',
           name: 'navigationItem',
           title: 'Navigation Item',
+          preview: {
+            select: {
+              title: 'title',
+              linkTitle: 'link.title',
+            },
+            prepare(selection) {
+              const { title, linkTitle } = selection
+              return {
+                title: title || linkTitle || 'No title',
+              }
+            },
+          },
           fields: [
             defineField({
               name: 'title',
