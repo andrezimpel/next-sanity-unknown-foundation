@@ -1,0 +1,28 @@
+
+[x] add favicon
+[x] add home page (landing page)
+[x] update posts
+  - add author and author meta data
+  - with no index
+[x] add pages
+  - with no index
+  -> scaffold for other document types
+[x] add navigation zones
+  - add header and footer with navigation zones
+[ ] add 404 page
+[ ] add open graph images
+[ ] add all relevant seo meta data with validations in schema and code
+- metatags
+- canonical url
+- update settings with default values for meatdata base
+[ ] add sitemap
+[ ] add robots
+[ ] add plausible tracking with proxying
+[ ] remove h1 from portable text
+[ ] environment variables
+[ ] add apple and android icons
+[ ] check generate viewport
+[ ] add docs with step by step instructions to what needs to be changed
+[ ] clean up sanity queries
+[ ] portable text tip preview
+[ ] use revalidate instead if irs to make hosting cheaper
