@@ -55,12 +55,6 @@ const allFields = {
         },
       },
     ],
-    validation: (rule) => rule.custom((_, context) => {
-      if (!context.document?.coverImage) {
-        return "This field is required if there is no cover image."
-      }
-      return true
-    }),
     hidden: ({ document }) => !!document?.coverImage,
   }),
   noIndex: defineField({
