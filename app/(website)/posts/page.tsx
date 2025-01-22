@@ -1,11 +1,13 @@
+import { JsonLd } from "@/components/jsonld"
 import { PostGrid } from "@/components/post-grid"
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { pageQuery, postsQuery } from "@/sanity/lib/queries"
-import { resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { resolveHref, resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Metadata } from "next"
 import { PortableText } from "next-sanity"
 import { notFound } from "next/navigation"
 import { PortableTextBlock } from "sanity"
+import { WebPage, WithContext } from "schema-dts"
 
 async function fetchPosts() {
   return sanityFetch({
@@ -42,6 +44,9 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: {
       index: !page?.noIndex
     },
+    alternates: {
+      canonical: resolveHref("page", "posts"),
+    }
   }
 }
 
@@ -53,11 +58,26 @@ export default async function PostsPage() {
 
   if (!page) return notFound()
 
+  const openGraphImage = resolveOpenGraphImage(page?.ogImage || page?.coverImage)
+
   return (
-    <div className="container mx-auto space-y-6">
-      <h1 className="text-4xl font-bold">{page.title}</h1>
-      <PortableText value={page.content as PortableTextBlock[]} />
-      <PostGrid posts={posts} />
-    </div>
+    <>
+      <div className="container mx-auto space-y-6">
+        <h1 className="text-4xl font-bold">{page.title}</h1>
+        <PortableText value={page.content as PortableTextBlock[]} />
+        <PostGrid posts={posts} />
+      </div>
+      <JsonLd jsonLd={{
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: page?.title,
+        ...(openGraphImage && {
+          image: openGraphImage?.url
+        }),
+        url: resolveHref("page", "posts"),
+        ...(page?.metaDescription && { description: page.metaDescription }),
+        ...(page?._updatedAt && { dateModified: page._updatedAt })
+      } as WithContext<WebPage>} />
+    </>
   )
 }

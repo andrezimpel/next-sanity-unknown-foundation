@@ -1,6 +1,6 @@
 instructions
 
-- run yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest
+- run yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest schema-dts@latest
 - setup .env.local remote through vercel
 - update favicon.ico
 - create settings
@@ -8,3 +8,4 @@ instructions
 - create pages
 - create posts
 - create navigation zones
+- set up internationalization if needed, see: https://nextjs.org/docs/app/building-your-application/routing/internationalization

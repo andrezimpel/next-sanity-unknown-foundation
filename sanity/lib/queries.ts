@@ -37,6 +37,7 @@ export const postsQuery = defineQuery(`
 export const postQuery = defineQuery(`
   *[_type == "post" && slug.current == $slug] [0] {
     _id,
+    _updatedAt,
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
     excerpt,
@@ -79,9 +80,16 @@ export const navigationZoneQuery = defineQuery(`
   }
 `)
 
+export const pagePathsQuery = defineQuery(`
+  *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {
+    "slug": slug.current
+  }
+`)
+
 export const pageQuery = defineQuery(`
   *[_type == "page" && slug.current == $slug] [0] {
     _id,
+    _updatedAt,
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
     content,

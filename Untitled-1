@@ -11,7 +11,7 @@
   - add header and footer with navigation zones
 [x] add 404 page
 [x] add open graph images
-[ ] add all relevant seo meta data with validations in schema and code
+[x] add all relevant seo meta data with validations in schema and code
 - metatags
 - canonical url
 - update settings with default values for meatdata base

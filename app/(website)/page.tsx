@@ -1,7 +1,9 @@
+import { JsonLd } from "@/components/jsonld"
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { homePageQuery, settingsQuery } from "@/sanity/lib/queries"
-import { resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { resolveHref, resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Metadata } from 'next'
+import { WebPage, WithContext } from "schema-dts"
 
 const fetchHomePage = async () => {
   return await Promise.all([
@@ -27,15 +29,33 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: {
       index: !homePage?.noIndex
     },
+    alternates: {
+      canonical: "/"
+    }
   }
 }
 
 export default async function HomePage() {
-  const page = await fetchHomePage()
+  const [page] = await fetchHomePage()
+
+  const openGraphImage = resolveOpenGraphImage(page?.ogImage)
 
   return (
-    <div className="container mx-auto">
-      <h1>{page[0]?.title}</h1>
-    </div>
+    <>
+      <div className="container mx-auto">
+        <h1>{page?.title}</h1>
+      </div>
+      <JsonLd jsonLd={{
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: page?.title,
+        ...(openGraphImage && {
+          image: openGraphImage?.url
+        }),
+        url: resolveHref("page", "/"),
+        ...(page?.metaDescription && { description: page.metaDescription }),
+        ...(page?._updatedAt && { dateModified: page._updatedAt })
+      } as WithContext<WebPage>} />
+    </>
   )
 }

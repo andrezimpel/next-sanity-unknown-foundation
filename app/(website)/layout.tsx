@@ -17,6 +17,8 @@ import { Suspense } from "react"
 import { Footer } from "./footer"
 import { Header } from "./header"
 
+const locale = "de_DE"
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await sanityFetch({
     query: settingsQuery,
@@ -46,6 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       images: ogImage ? [ogImage] : [],
       ...(settings?.title && { title: settings.title }),
+      locale,
     },
     robots: {
       index: true,
@@ -67,7 +70,7 @@ export default async function RootLayout({
   const { isEnabled: isDraftMode } = await draftMode()
 
   return (
-    <html lang="de" className={`${inter.variable} bg-white text-black`}>
+    <html lang={locale} className={`${inter.variable} bg-white text-black`}>
       <body>
         {isDraftMode && <AlertBanner />}
         <Suspense>
