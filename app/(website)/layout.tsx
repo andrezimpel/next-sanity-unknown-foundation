@@ -68,12 +68,12 @@ export default async function RootLayout({
 
   return (
     <html lang="de" className={`${inter.variable} bg-white text-black`}>
-      <body className="space-y-12">
+      <body>
         {isDraftMode && <AlertBanner />}
         <Suspense>
           <Header />
         </Suspense>
-        <main>{children}</main>
+        <main className="space-y-12 py-12">{children}</main>
         <Suspense>
           <Footer />
         </Suspense>

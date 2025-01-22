@@ -48,12 +48,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PostPage({ params }: Props) {
   const post = await fetchPost({ params })
 
-  if (!post?._id) {
+  if (!post) {
     return notFound()
   }
 
   return (
-    <div className="container mx-auto px-5" itemScope itemType="https://schema.org/BlogPosting">
+    <div className="container mx-auto" itemScope itemType="https://schema.org/BlogPosting">
       <article className="space-y-8">
         <h1 className="text-4xl font-bold" itemProp="headline">{post.title}</h1>
         <div className="mb-8 sm:mx-0 md:mb-16" itemProp="image">

@@ -3,6 +3,7 @@ import { pageQuery } from "@/sanity/lib/queries"
 import { resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Metadata } from 'next'
 import { PortableText } from "next-sanity"
+import { notFound } from "next/navigation"
 import { PortableTextBlock } from "sanity"
 
 async function fetchPage({ params }: Props) {
@@ -36,6 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Page({ params }: Props) {
   const page = await fetchPage({ params })
+
+  if (!page) {
+    return notFound()
+  }
 
   return (
     <div className="container mx-auto space-y-6">

@@ -34,8 +34,8 @@ export default async function HomePage() {
   const page = await fetchHomePage()
 
   return (
-    <div className="container mx-auto px-5">
-      this is the home page: <h1>{page[0]?.title}</h1>
+    <div className="container mx-auto">
+      <h1>{page[0]?.title}</h1>
     </div>
   )
 }
