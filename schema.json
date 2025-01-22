@@ -632,6 +632,10 @@
                         {
                           "type": "string",
                           "value": "blockquote"
+                        },
+                        {
+                          "type": "string",
+                          "value": "tip"
                         }
                       ]
                     },
@@ -1267,6 +1271,10 @@
                         {
                           "type": "string",
                           "value": "blockquote"
+                        },
+                        {
+                          "type": "string",
+                          "value": "tip"
                         }
                       ]
                     },

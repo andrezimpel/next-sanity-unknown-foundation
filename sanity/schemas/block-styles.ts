@@ -1,4 +1,5 @@
 import { defineArrayMember } from "sanity"
+import TipPreview from "../preview/tip"
 
 export default [
   defineArrayMember({
@@ -10,7 +11,11 @@ export default [
       { title: "H4", value: "h4" },
       { title: "H5", value: "h5" },
       { title: "Quote", value: "blockquote" },
-      // { title: "Tip", value: "tip" }, TODO: Add tip block style
+      {
+        title: "Tip",
+        value: "tip",
+        component: TipPreview
+      }
     ]
   }),
   defineArrayMember({

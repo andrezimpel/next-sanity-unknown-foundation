@@ -19,10 +19,10 @@
 [x] add robots
 [x] add plausible tracking with proxying
 [x] remove h1 from portable text
-[ ] environment variables
-[ ] add apple and android icons
+[x] add apple and android icons
 [x] check generate viewport
+[x] portable text tip preview
+[ ] use revalidate instead if irs to make hosting cheaper
 [ ] add docs with step by step instructions to what needs to be changed
 [ ] clean up sanity queries
-[ ] portable text tip preview
-[ ] use revalidate instead if irs to make hosting cheaper
+[ ] environment variables

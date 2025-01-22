@@ -114,7 +114,7 @@ export type Post = {
       _type: "span";
       _key: string;
     }>;
-    style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote";
+    style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote" | "tip";
     listItem?: "bullet" | "number";
     markDefs?: Array<{
       href?: string;
@@ -212,7 +212,7 @@ export type Page = {
       _type: "span";
       _key: string;
     }>;
-    style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote";
+    style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote" | "tip";
     listItem?: "bullet" | "number";
     markDefs?: Array<{
       href?: string;
@@ -615,7 +615,7 @@ export type PostQueryResult = {
       _type: "span";
       _key: string;
     }>;
-    style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal";
+    style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal" | "tip";
     listItem?: "bullet" | "number";
     markDefs?: Array<{
       href?: string;
@@ -743,7 +743,7 @@ export type NavigationZoneQueryResult = {
           _type: "span";
           _key: string;
         }>;
-        style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal";
+        style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal" | "tip";
         listItem?: "bullet" | "number";
         markDefs?: Array<{
           href?: string;
@@ -809,7 +809,7 @@ export type NavigationZoneQueryResult = {
           _type: "span";
           _key: string;
         }>;
-        style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal";
+        style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal" | "tip";
         listItem?: "bullet" | "number";
         markDefs?: Array<{
           href?: string;
@@ -888,7 +888,7 @@ export type PageQueryResult = {
       _type: "span";
       _key: string;
     }>;
-    style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal";
+    style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal" | "tip";
     listItem?: "bullet" | "number";
     markDefs?: Array<{
       href?: string;
