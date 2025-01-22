@@ -544,10 +544,19 @@ export type HomePageQueryResult = {
   } | null;
   noIndex: boolean | null;
 } | null;
-// Variable: postsPathsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current  }
-export type PostsPathsQueryResult = Array<{
+// Variable: pagePathsQuery
+// Query: *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current,    _updatedAt,    _id  }
+export type PagePathsQueryResult = Array<{
   slug: string | null;
+  _updatedAt: string;
+  _id: string;
+}>;
+// Variable: postPathsQuery
+// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current,    _updatedAt,    _id  }
+export type PostPathsQueryResult = Array<{
+  slug: string | null;
+  _updatedAt: string;
+  _id: string;
 }>;
 // Variable: postsQuery
 // Query: *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage {      ...,      "lqip": asset->metadata.lqip    },    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
@@ -861,11 +870,6 @@ export type NavigationZoneQueryResult = {
     _key: string;
   }> | null;
 } | null;
-// Variable: pagePathsQuery
-// Query: *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current  }
-export type PagePathsQueryResult = Array<{
-  slug: string | null;
-}>;
 // Variable: pageQuery
 // Query: *[_type == "page" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    content,    coverImage {      ...,      "lqip": asset->metadata.lqip    },      metaDescription,  ogTitle,  ogImage,  noIndex  }
 export type PageQueryResult = {
@@ -940,12 +944,12 @@ declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"settings\"][0]": SettingsQueryResult;
     "*[_type == \"homePage\"][0] {\n  ...,\n  \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n}": HomePageQueryResult;
-    "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current\n  }\n": PostsPathsQueryResult;
+    "\n  *[_type == \"page\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current,\n    _updatedAt,\n    _id\n  }\n": PagePathsQueryResult;
+    "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current,\n    _updatedAt,\n    _id\n  }\n": PostPathsQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": PostsQueryResult;
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position},\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
     "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": MoreStoriesQueryResult;
     "\n  *[_type == \"navigationZone\" && identifier == $identifier][0] {\n    items[] {\n      ...,\n      link->{\n        ...,\n        title,\n        \"slug\": slug.current,\n      }\n    }\n  }\n": NavigationZoneQueryResult;
-    "\n  *[_type == \"page\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current\n  }\n": PagePathsQueryResult;
     "\n  *[_type == \"page\" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    content,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PageQueryResult;
   }
 }

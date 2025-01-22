@@ -3,9 +3,13 @@ instructions
 - run yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest schema-dts@latest
 - setup .env.local remote through vercel
 - update favicon.ico
+- set up internationalization if needed, see: https://nextjs.org/docs/app/building-your-application/routing/internationalization
+
+create content
 - create settings
 - create home page document
 - create pages
 - create posts
 - create navigation zones
-- set up internationalization if needed, see: https://nextjs.org/docs/app/building-your-application/routing/internationalization
+
+- add more documents if needed. use page as a base for other document types. make sure to update sitemap.tsx and robots.tsx if needed.

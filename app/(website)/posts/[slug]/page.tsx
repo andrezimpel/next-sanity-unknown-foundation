@@ -1,7 +1,7 @@
 import DateComponent from "@/components/date"
 import { JsonLd } from "@/components/jsonld"
 import { sanityFetch } from "@/sanity/lib/fetch"
-import { postQuery, postsPathsQuery } from "@/sanity/lib/queries"
+import { postPathsQuery, postQuery } from "@/sanity/lib/queries"
 import { resolveHref, resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Metadata } from "next"
 import { toPlainText, type PortableTextBlock } from "next-sanity"
@@ -23,7 +23,7 @@ async function fetchPost({ params }: Props) {
 
 export async function generateStaticParams() {
   return await sanityFetch({
-    query: postsPathsQuery,
+    query: postPathsQuery,
     perspective: "published",
     stega: false,
   })

@@ -13,9 +13,19 @@ export const homePageQuery = defineQuery(`*[_type == "homePage"][0] {
   ${metafields}
 }`)
 
-export const postsPathsQuery = defineQuery(`
+export const pagePathsQuery = defineQuery(`
+  *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {
+    "slug": slug.current,
+    _updatedAt,
+    _id
+  }
+`)
+
+export const postPathsQuery = defineQuery(`
   *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
-    "slug": slug.current
+    "slug": slug.current,
+    _updatedAt,
+    _id
   }
 `)
 
@@ -77,12 +87,6 @@ export const navigationZoneQuery = defineQuery(`
         "slug": slug.current,
       }
     }
-  }
-`)
-
-export const pagePathsQuery = defineQuery(`
-  *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {
-    "slug": slug.current
   }
 `)
 
