@@ -16,6 +16,7 @@ export function PostCoverImage({ image }: { image: NonNullable<PostQueryResult>[
     alt: image?.alt || "Untitled",
     priority: true,
     blurDataURL: image?.lqip || "",
+    placeholder: "blur",
   }
 
   const {
