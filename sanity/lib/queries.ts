@@ -25,7 +25,10 @@ export const postsQuery = defineQuery(`
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
     excerpt,
-    coverImage,
+    coverImage {
+      ...,
+      "lqip": asset->metadata.lqip
+    },
     "date": coalesce(date, _updatedAt),
     "author": author->{"name": coalesce(name, "Anonymous"), picture, position}
   }
@@ -38,7 +41,10 @@ export const postQuery = defineQuery(`
     "slug": slug.current,
     excerpt,
     content,
-    coverImage,
+    coverImage {
+      ...,
+      "lqip": asset->metadata.lqip
+    },
     "date": coalesce(date, _updatedAt),
     "author": author->{"name": coalesce(name, "Anonymous"), picture, position},
     ${metafields}
@@ -51,7 +57,10 @@ export const moreStoriesQuery = defineQuery(`
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
     excerpt,
-    coverImage,
+    coverImage {
+      ...,
+      "lqip": asset->metadata.lqip
+    },
     "date": coalesce(date, _updatedAt),
     "author": author->{"name": coalesce(name, "Anonymous"), picture, position}
   }
@@ -76,7 +85,10 @@ export const pageQuery = defineQuery(`
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
     content,
-    coverImage,
+    coverImage {
+      ...,
+      "lqip": asset->metadata.lqip
+    },
     ${metafields}
   }
 `)

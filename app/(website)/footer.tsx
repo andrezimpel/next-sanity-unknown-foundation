@@ -1,5 +1,6 @@
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { navigationZoneQuery, settingsQuery } from "@/sanity/lib/queries"
+import { resolveHref } from "@/sanity/lib/utils"
 import Link from "next/link"
 
 export async function Footer() {
@@ -20,7 +21,12 @@ export async function Footer() {
       </div>
       <nav>
         {navigationZone?.items?.map((item, index) => (
-          <Link key={item?._key || index} href={item?.link?.slug || item?.url || ""} className="px-2 py-1">
+          <Link
+            key={item?._key || index}
+            href={resolveHref(item?.link?._type, item?.link?.slug) || item?.url || ""}
+            className="px-2 py-1"
+            target={item?.url && !item?.url.startsWith(process.env.SITE_URL || "") ? "_blank" : "_self"}
+          >
             {item?.title || item?.link?.title || "Untitled"}
           </Link>
         ))}

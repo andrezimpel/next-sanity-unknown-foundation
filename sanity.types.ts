@@ -550,7 +550,7 @@ export type PostsPathsQueryResult = Array<{
   slug: string | null;
 }>;
 // Variable: postsQuery
-// Query: *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
+// Query: *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage {      ...,      "lqip": asset->metadata.lqip    },    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
 export type PostsQueryResult = Array<{
   _id: string;
   title: string | "Untitled";
@@ -567,6 +567,7 @@ export type PostsQueryResult = Array<{
     crop?: SanityImageCrop;
     alt?: string;
     _type: "image";
+    lqip: string | null;
   } | null;
   date: string;
   author: {
@@ -587,7 +588,7 @@ export type PostsQueryResult = Array<{
   } | null;
 }>;
 // Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position},      metaDescription,  ogTitle,  ogImage,  noIndex  }
+// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content,    coverImage {      ...,      "lqip": asset->metadata.lqip    },    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position},      metaDescription,  ogTitle,  ogImage,  noIndex  }
 export type PostQueryResult = {
   _id: string;
   title: string | "Untitled";
@@ -635,6 +636,7 @@ export type PostQueryResult = {
     crop?: SanityImageCrop;
     alt?: string;
     _type: "image";
+    lqip: string | null;
   } | null;
   date: string;
   author: {
@@ -670,7 +672,7 @@ export type PostQueryResult = {
   noIndex: boolean | null;
 } | null;
 // Variable: moreStoriesQuery
-// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage,    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
+// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage {      ...,      "lqip": asset->metadata.lqip    },    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
 export type MoreStoriesQueryResult = Array<{
   _id: string;
   title: string | "Untitled";
@@ -687,6 +689,7 @@ export type MoreStoriesQueryResult = Array<{
     crop?: SanityImageCrop;
     alt?: string;
     _type: "image";
+    lqip: string | null;
   } | null;
   date: string;
   author: {
@@ -858,7 +861,7 @@ export type NavigationZoneQueryResult = {
   }> | null;
 } | null;
 // Variable: pageQuery
-// Query: *[_type == "page" && slug.current == $slug] [0] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    content,    coverImage,      metaDescription,  ogTitle,  ogImage,  noIndex  }
+// Query: *[_type == "page" && slug.current == $slug] [0] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    content,    coverImage {      ...,      "lqip": asset->metadata.lqip    },      metaDescription,  ogTitle,  ogImage,  noIndex  }
 export type PageQueryResult = {
   _id: string;
   title: string | "Untitled";
@@ -905,6 +908,7 @@ export type PageQueryResult = {
     crop?: SanityImageCrop;
     alt?: string;
     _type: "image";
+    lqip: string | null;
   } | null;
   metaDescription: string | null;
   ogTitle: string | null;
@@ -930,10 +934,10 @@ declare module "@sanity/client" {
     "*[_type == \"settings\"][0]": SettingsQueryResult;
     "*[_type == \"homePage\"][0] {\n  ...,\n  \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n}": HomePageQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current\n  }\n": PostsPathsQueryResult;
-    "\n  *[_type == \"post\" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": PostsQueryResult;
-    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position},\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
-    "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage,\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": MoreStoriesQueryResult;
+    "\n  *[_type == \"post\" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": PostsQueryResult;
+    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position},\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
+    "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": MoreStoriesQueryResult;
     "\n  *[_type == \"navigationZone\" && identifier == $identifier][0] {\n    items[] {\n      ...,\n      link->{\n        ...,\n        title,\n        \"slug\": slug.current,\n      }\n    }\n  }\n": NavigationZoneQueryResult;
-    "\n  *[_type == \"page\" && slug.current == $slug] [0] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    content,\n    coverImage,\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PageQueryResult;
+    "\n  *[_type == \"page\" && slug.current == $slug] [0] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    content,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PageQueryResult;
   }
 }
