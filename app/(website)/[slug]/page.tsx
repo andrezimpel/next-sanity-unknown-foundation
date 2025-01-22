@@ -13,14 +13,14 @@ async function fetchPage({ params }: Props) {
   })
 }
 
-type Props = {
+export type Props = {
   params: Promise<{ slug: string }>
 }
 
 // Function to generate metadata
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = await fetchPage({ params })
-  const ogImage = resolveOpenGraphImage(page?.ogImage)
+  const ogImage = resolveOpenGraphImage(page?.ogImage || page?.coverImage)
 
   return {
     ...(page?.title && { title: page?.title }),

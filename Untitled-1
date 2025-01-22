@@ -9,8 +9,8 @@
   -> scaffold for other document types
 [x] add navigation zones
   - add header and footer with navigation zones
-[ ] add 404 page
-[ ] add open graph images
+[x] add 404 page
+[x] add open graph images
 [ ] add all relevant seo meta data with validations in schema and code
 - metatags
 - canonical url

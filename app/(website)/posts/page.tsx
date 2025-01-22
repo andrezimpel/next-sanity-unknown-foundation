@@ -30,7 +30,7 @@ async function fetchPage() {
 // Function to generate metadata
 export async function generateMetadata(): Promise<Metadata> {
   const page = await fetchPage()
-  const ogImage = resolveOpenGraphImage(page?.ogImage)
+  const ogImage = resolveOpenGraphImage(page?.ogImage || page?.coverImage)
 
   return {
     ...(page?.title && { title: page?.title }),

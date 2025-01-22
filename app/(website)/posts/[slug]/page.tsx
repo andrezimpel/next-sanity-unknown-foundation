@@ -11,7 +11,7 @@ import Avatar from "./avatar"
 import { PostCoverImage } from "./cover-image"
 import MoreStories from "./more-posts"
 
-type Props = {
+export type Props = {
   params: Promise<{ slug: string }>
 }
 
