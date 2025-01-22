@@ -3,8 +3,6 @@ import { pageQuery } from '@/sanity/lib/queries'
 import { ImageResponse } from 'next/og'
 import { Props } from './page'
 
-export const runtime = 'edge'
-
 async function fetchPage({ params }: Props) {
   return sanityFetch({ query: pageQuery, params })
 }

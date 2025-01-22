@@ -2,8 +2,6 @@ import { sanityFetch } from '@/sanity/lib/fetch'
 import { homePageQuery } from '@/sanity/lib/queries'
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
-
 async function fetchPage() {
   return sanityFetch({
     query: homePageQuery,

@@ -861,6 +861,11 @@ export type NavigationZoneQueryResult = {
     _key: string;
   }> | null;
 } | null;
+// Variable: pagePathsQuery
+// Query: *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current  }
+export type PagePathsQueryResult = Array<{
+  slug: string | null;
+}>;
 // Variable: pageQuery
 // Query: *[_type == "page" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    content,    coverImage {      ...,      "lqip": asset->metadata.lqip    },      metaDescription,  ogTitle,  ogImage,  noIndex  }
 export type PageQueryResult = {
@@ -940,6 +945,7 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position},\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
     "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": MoreStoriesQueryResult;
     "\n  *[_type == \"navigationZone\" && identifier == $identifier][0] {\n    items[] {\n      ...,\n      link->{\n        ...,\n        title,\n        \"slug\": slug.current,\n      }\n    }\n  }\n": NavigationZoneQueryResult;
+    "\n  *[_type == \"page\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current\n  }\n": PagePathsQueryResult;
     "\n  *[_type == \"page\" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    content,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PageQueryResult;
   }
 }
