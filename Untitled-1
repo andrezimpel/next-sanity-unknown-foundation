@@ -15,8 +15,8 @@
 - metatags
 - canonical url
 - update settings with default values for meatdata base
-[ ] add sitemap
-[ ] add robots
+[x] add sitemap
+[x] add robots
 [ ] add plausible tracking with proxying
 [ ] remove h1 from portable text
 [ ] environment variables

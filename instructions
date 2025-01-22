@@ -1,7 +1,7 @@
 instructions
 
 - run yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest schema-dts@latest
-- setup .env.local remote through vercel
+- setup .env.local remote through vercel (NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_READ_TOKEN, SITE_URL)
 - update favicon.ico
 - set up internationalization if needed, see: https://nextjs.org/docs/app/building-your-application/routing/internationalization
 
