@@ -1,4 +1,5 @@
 import type { NextConfig } from "next"
+import { withPlausibleProxy } from 'next-plausible'
 
 const nextConfig: NextConfig = {
   env: {
@@ -17,4 +18,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withPlausibleProxy()(nextConfig)

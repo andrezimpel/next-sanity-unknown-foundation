@@ -17,11 +17,11 @@
 - update settings with default values for meatdata base
 [x] add sitemap
 [x] add robots
-[ ] add plausible tracking with proxying
-[ ] remove h1 from portable text
+[x] add plausible tracking with proxying
+[x] remove h1 from portable text
 [ ] environment variables
 [ ] add apple and android icons
-[ ] check generate viewport
+[x] check generate viewport
 [ ] add docs with step by step instructions to what needs to be changed
 [ ] clean up sanity queries
 [ ] portable text tip preview

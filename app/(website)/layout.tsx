@@ -1,7 +1,7 @@
 import "../globals.css"
 
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import {
   VisualEditing
 } from "next-sanity"
@@ -16,6 +16,7 @@ import { resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Suspense } from "react"
 import { Footer } from "./footer"
 import { Header } from "./header"
+import Provider from "./provider"
 
 const locale = "de_DE"
 
@@ -56,6 +57,16 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
+export function generateViewport(): Viewport {
+  return {
+    themeColor: '#000000',
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  }
+}
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -72,16 +83,18 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${inter.variable} bg-white text-black`}>
       <body>
-        {isDraftMode && <AlertBanner />}
-        <Suspense>
-          <Header />
-        </Suspense>
-        <main className="space-y-12 py-12">{children}</main>
-        <Suspense>
-          <Footer />
-        </Suspense>
-        {isDraftMode && <VisualEditing />}
-        <SpeedInsights />
+        <Provider>
+          {isDraftMode && <AlertBanner />}
+          <Suspense>
+            <Header />
+          </Suspense>
+          <main className="space-y-12 py-12">{children}</main>
+          <Suspense>
+            <Footer />
+          </Suspense>
+          {isDraftMode && <VisualEditing />}
+          <SpeedInsights />
+        </Provider>
       </body>
     </html>
   )
