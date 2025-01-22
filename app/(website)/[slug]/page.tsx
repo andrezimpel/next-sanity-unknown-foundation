@@ -1,11 +1,11 @@
 import { JsonLd } from "@/components/jsonld"
+import PortableText from "@/components/portable-text"
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { pagePathsQuery, pageQuery } from "@/sanity/lib/queries"
 import { resolveHref, resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Metadata } from 'next'
-import { PortableText } from "next-sanity"
+import { PortableTextBlock } from "next-sanity"
 import { notFound } from "next/navigation"
-import { PortableTextBlock } from "sanity"
 import { WebPage, WithContext } from 'schema-dts'
 
 async function fetchPage({ params }: Props) {
