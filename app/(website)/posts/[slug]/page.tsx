@@ -1,35 +1,52 @@
+import DateComponent from "@/components/date"
+import { sanityFetch } from "@/sanity/lib/fetch"
+import { postQuery, postsPathsQuery } from "@/sanity/lib/queries"
+import { resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { Metadata } from "next"
 import { type PortableTextBlock } from "next-sanity"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
-
-import CoverImage from "@/components/cover-image"
-import DateComponent from "@/components/date"
 import PortableText from "../../portable-text"
 import Avatar from "./avatar"
+import { PostCoverImage } from "./cover-image"
 import MoreStories from "./more-posts"
-
-import * as demo from "@/sanity/lib/demo"
-import { sanityFetch } from "@/sanity/lib/fetch"
-import { postQuery, settingsQuery } from "@/sanity/lib/queries"
 
 type Props = {
   params: Promise<{ slug: string }>
 }
 
-// export async function generateStaticParams() {
-//   return await sanityFetch({
-//     query: postsPathsQuery,
-//     perspective: "published",
-//     stega: false,
-//   })
-// }
+async function fetchPost({ params }: Props) {
+  return await sanityFetch({ query: postQuery, params })
+}
+
+export async function generateStaticParams() {
+  return await sanityFetch({
+    query: postsPathsQuery,
+    perspective: "published",
+    stega: false,
+  })
+}
+
+// Function to generate metadata
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = await fetchPost({ params })
+  const ogImage = resolveOpenGraphImage(post?.ogImage)
+
+  return {
+    ...(post?.title && { title: post?.title }),
+    ...(post?.metaDescription && { description: post.metaDescription }),
+    openGraph: {
+      ...(post?.ogTitle && { title: post.ogTitle }),
+      ...(ogImage && { images: [ogImage] }),
+    },
+    robots: {
+      index: !post?.noIndex
+    },
+  }
+}
 
 export default async function PostPage({ params }: Props) {
-  const [post, settings] = await Promise.all([
-    sanityFetch({ query: postQuery, params }),
-    sanityFetch({ query: settingsQuery }),
-  ])
+  const post = await fetchPost({ params })
 
   if (!post?._id) {
     return notFound()
@@ -37,53 +54,32 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <div className="container mx-auto px-5" itemScope itemType="https://schema.org/BlogPosting">
-      <h2 className="mb-16 mt-10 text-2xl font-bold leading-tight tracking-tight md:text-4xl md:tracking-tighter">
-        <Link href="/" className="hover:underline" itemProp="publisher" itemScope itemType="https://schema.org/Organization">
-          <span itemProp="name">{settings?.title || demo.title}</span>
-        </Link>
-      </h2>
-      <article>
-        <h1 className="text-balance mb-12 text-6xl font-bold leading-tight tracking-tighter md:text-7xl md:leading-none lg:text-8xl" itemProp="headline">
-          {post.title}
-        </h1>
-        <div className="hidden md:mb-12 md:block" itemProp="author" itemScope itemType="https://schema.org/Person">
-          {post.author && (
-            <>
-              <Avatar name={post.author.name} picture={post.author.picture} />
-              <meta itemProp="name" content={post.author.name} />
-            </>
-          )}
-        </div>
+      <article className="space-y-8">
+        <h1 className="text-4xl font-bold" itemProp="headline">{post.title}</h1>
         <div className="mb-8 sm:mx-0 md:mb-16" itemProp="image">
-          <CoverImage image={post.coverImage} priority height={1000} width={2000} />
+          <PostCoverImage image={post.coverImage} />
         </div>
-        <div className="mx-auto max-w-2xl">
-          <div className="mb-6 block md:hidden" itemProp="author" itemScope itemType="https://schema.org/Person">
-            {post.author && (
-              <>
-                <Avatar name={post.author.name} picture={post.author.picture} />
-                <meta itemProp="name" content={post.author.name} />
-              </>
-            )}
+        {post.date && (
+          <div className="my-4 text-sm" itemProp="datePublished" content={post.date}>
+            <DateComponent dateString={post.date} />
           </div>
-          <div className="mb-6 text-lg">
-            <div className="mb-4 text-lg" itemProp="datePublished" content={post.date}>
-              <DateComponent dateString={post.date} />
-            </div>
+        )}
+        {post.author && (
+          <div className="mt-6 mb-12 md:block" itemProp="author" itemScope itemType="https://schema.org/Person">
+            <Avatar name={post.author.name} picture={post.author.picture} />
+            <meta itemProp="name" content={post.author.name} />
           </div>
-        </div>
+        )}
         {post.content?.length && (
           <div itemProp="articleBody">
             <PortableText
-              className="mx-auto max-w-2xl"
               value={post.content as PortableTextBlock[]}
             />
           </div>
         )}
       </article>
-      <aside>
-        <hr className="border-accent-2 mb-24 mt-28" />
-        <h2 className="mb-8 text-6xl font-bold leading-tight tracking-tighter md:text-7xl">
+      <aside className="mt-12 space-y-4">
+        <h2 className="text-lg font-bold">
           Recent Stories
         </h2>
         <Suspense>
