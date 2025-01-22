@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   ])
 
-  const pageObjects = pages.map((page) => {
+  const pageObjects = pages.filter((page) => !page.noIndex).map((page) => {
     return {
       url: `${process.env.SITE_URL}${resolveHref("page", page.slug!)}`,
       lastModified: page._updatedAt,
@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   })
 
-  const postObjects = posts.map((post) => {
+  const postObjects = posts.filter((post) => !post.noIndex).map((post) => {
     return {
       url: `${process.env.SITE_URL}${resolveHref("post", post.slug!)}`,
       lastModified: post._updatedAt,

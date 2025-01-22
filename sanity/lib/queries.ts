@@ -17,7 +17,8 @@ export const pagePathsQuery = defineQuery(`
   *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {
     "slug": slug.current,
     _updatedAt,
-    _id
+    _id,
+    noIndex
   }
 `)
 
@@ -25,7 +26,8 @@ export const postPathsQuery = defineQuery(`
   *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
     "slug": slug.current,
     _updatedAt,
-    _id
+    _id,
+    noIndex
   }
 `)
 
