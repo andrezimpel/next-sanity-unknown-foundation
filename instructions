@@ -3,6 +3,8 @@ instructions
 - run yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest schema-dts@latest
 - setup .env.local remote through vercel (NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_READ_TOKEN, SITE_URL, NEXT_PUBLIC_PLAUSIBLE_DOMAIN)
 - setup webhooks for sanity to revalidate data
+  https://www.sanity.io/manage/webhooks/share?name=Tag-based%20Revalidation%20Hook%20for%20Next.js%2015&description=&url=https%3A%2F%2FYOUR-PRODUCTION-URL.TLD%2Fapi%2Frevalidate%2Ftag&on=create&on=update&on=delete&filter=_type%20in%20%5B%22post%22%2C%20%22author%22%2C%20%22category%22%5D&projection=%7B%22tags%22%3A%20%5B_type%2C%20_type%20%2B%20%22%3A%22%20%2B%20slug.current%5D%7D&httpMethod=POST&apiVersion=v2021-03-25&includeDrafts=&headers=%7B%7D
+  -> update with our custom hooks for pages, settings, data etc
 - update favicon.ico
 - add icon (.ico, .jpg, .jpeg, .png, .svg) and apple-icon (.jpg, .jpeg, .png), see: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons#image-files-ico-jpg-png
 - set up internationalization if needed, see: https://nextjs.org/docs/app/building-your-application/routing/internationalization
@@ -17,3 +19,6 @@ create content
 - create navigation zones
 
 - add more documents if needed. use page as a base for other document types. make sure to update sitemap.tsx and robots.tsx if needed.
+
+
+for deploy: https://vercel.com/new/clone?demo-description=A+statically+generated+blog+example+using+Next.js+and+Sanity&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F6XJb5MwqgMI8PvXNwUT5y1%2Fc47c515e4bbc0c29c586474ac262307e%2Fnext-blog-sanity.vercel.app__-_Knut_Melv__r.png&demo-title=Blog+Starter+Kit+with+Sanity&demo-url=https%3A%2F%2Fnext-blog-sanity.vercel.app%2F&from=templates&integration-ids=oac_hb2LITYajhRQ0i4QznmKH7gx&project-name=Blog+Starter+Kit+with+Sanity&repository-name=blog-next-sanity&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fcms-sanity&teamSlug=unknown-studios-s-team -> adjust it
