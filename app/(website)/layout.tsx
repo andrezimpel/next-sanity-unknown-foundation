@@ -1,6 +1,5 @@
 import "../globals.css"
 
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata, Viewport } from "next"
 import {
   VisualEditing
@@ -94,7 +93,6 @@ export default async function RootLayout({
             <Footer />
           </Suspense>
           {isDraftMode && <VisualEditing />}
-          <SpeedInsights />
         </Provider>
       </body>
     </html>
