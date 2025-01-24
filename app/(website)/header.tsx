@@ -7,7 +7,6 @@ export async function Header() {
   const [settings, navigationZone] = await Promise.all([
     sanityFetch({
       query: settingsQuery,
-      perspective: "published",
       tags: ["settings"],
     }),
     sanityFetch({

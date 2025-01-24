@@ -1,22 +1,23 @@
 import { sanityFetch } from "@/sanity/lib/fetch"
-import { settingsQuery } from "@/sanity/lib/queries"
-// import { navigationZoneQuery, settingsQuery } from "@/sanity/lib/queries"
-// import { resolveHref } from "@/sanity/lib/utils"
-// import Link from "next/link"
+import { navigationZoneQuery, settingsQuery } from "@/sanity/lib/queries"
+import { resolveHref } from "@/sanity/lib/utils"
+import Link from "next/link"
 
 export async function Footer() {
-  const [settings] = await Promise.all([
+  const [settings, navigationZone] = await Promise.all([
     sanityFetch({
       query: settingsQuery,
+      perspective: "published",
       tags: ["settings"],
     }),
-    // sanityFetch({
-    //   query: navigationZoneQuery,
-    //   params: {
-    //     identifier: "legal",
-    //   },
-    //   tags: ["navigationZone"],
-    // })
+    sanityFetch({
+      query: navigationZoneQuery,
+      params: {
+        identifier: "legal",
+      },
+      perspective: "published",
+      tags: ["navigationZone"],
+    })
   ])
 
   return (
@@ -24,7 +25,7 @@ export async function Footer() {
       <div>
         Ⓒ {new Date().getFullYear()} {settings?.title || "Untitled"}
       </div>
-      {/* <nav>
+      <nav>
         {navigationZone?.items?.map((item, index) => (
           <Link
             key={item?._key || index}
@@ -35,7 +36,7 @@ export async function Footer() {
             {item?.title || item?.link?.title || "Untitled"}
           </Link>
         ))}
-      </nav> */}
+      </nav>
     </footer>
   )
 }
