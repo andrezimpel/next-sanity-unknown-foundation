@@ -16,6 +16,7 @@ export default async function RootTestLayout({
     <html lang="de" className="bg-white text-black">
       <body>
         {isDraftMode && <AlertBanner />}
+        {isDraftMode && <div>Draft mode is enabled</div>}
         {children}
         <div>
           <b>Test footer:</b><br />
