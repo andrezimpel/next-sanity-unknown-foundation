@@ -1,12 +1,10 @@
-import TestPageComponentAll from "./component-all"
-import TestPageComponentSeperate from "./component-seperate"
+// import TestPageComponentAll from "./component-all"
+// import TestPageComponentSeperate from "./component-seperate"
 
 export default async function TestPage() {
   return (
     <div>
-      <TestPageComponentAll />
-      <hr />
-      <TestPageComponentSeperate />
+      page content
     </div>
   )
 }
