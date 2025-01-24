@@ -18,7 +18,12 @@ export type Props = {
 }
 
 async function fetchPost({ params }: Props) {
-  return await sanityFetch({ query: postQuery, params })
+  const resolvedParams = await params
+  return await sanityFetch({
+    query: postQuery,
+    params: params,
+    tags: [`post:${resolvedParams.slug}`],
+  })
 }
 
 export async function generateStaticParams() {

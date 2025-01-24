@@ -7,8 +7,15 @@ import { WebPage, WithContext } from "schema-dts"
 
 const fetchHomePage = async () => {
   return await Promise.all([
-    sanityFetch({ query: homePageQuery }),
-    sanityFetch({ query: settingsQuery, stega: false }),
+    sanityFetch({
+      query: homePageQuery,
+      tags: ["homePage"],
+    }),
+    sanityFetch({
+      query: settingsQuery,
+      stega: false,
+      tags: ["settings"],
+    }),
   ])
 }
 

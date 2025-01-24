@@ -5,12 +5,17 @@ import Link from "next/link"
 
 export async function Header() {
   const [settings, navigationZone] = await Promise.all([
-    sanityFetch({ query: settingsQuery }),
+    sanityFetch({
+      query: settingsQuery,
+      stega: false,
+      tags: ["settings"],
+    }),
     sanityFetch({
       query: navigationZoneQuery,
       params: {
         identifier: "header",
       },
+      tags: ["navigationZone"],
     })
   ])
 

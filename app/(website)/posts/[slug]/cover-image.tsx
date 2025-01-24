@@ -13,7 +13,7 @@ export function PostCoverImage({ image }: { image: NonNullable<PostQueryResult>[
   const { theme } = resolveConfig(tailwindConfig)
 
   const common: Omit<ImageProps, "src"> = {
-    alt: image?.alt || "Untitled",
+    alt: image?.alt || "",
     priority: true,
     blurDataURL: image?.lqip || "",
     placeholder: "blur",

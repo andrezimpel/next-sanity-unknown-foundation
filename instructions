@@ -3,8 +3,14 @@ instructions
 - run yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest schema-dts@latest
 - setup .env.local remote through vercel (NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_READ_TOKEN, SITE_URL, NEXT_PUBLIC_PLAUSIBLE_DOMAIN)
 - setup webhooks for sanity to revalidate data
-  https://www.sanity.io/manage/webhooks/share?name=Tag-based%20Revalidation%20Hook%20for%20Next.js%2015&description=&url=https%3A%2F%2FYOUR-PRODUCTION-URL.TLD%2Fapi%2Frevalidate%2Ftag&on=create&on=update&on=delete&filter=_type%20in%20%5B%22post%22%2C%20%22author%22%2C%20%22category%22%5D&projection=%7B%22tags%22%3A%20%5B_type%2C%20_type%20%2B%20%22%3A%22%20%2B%20slug.current%5D%7D&httpMethod=POST&apiVersion=v2021-03-25&includeDrafts=&headers=%7B%7D
-  -> update with our custom hooks for pages, settings, data etc
+  page, post:
+  -> https://www.sanity.io/manage/webhooks/share?name=Tag-based%20revalidation%20hook%20for%20slug%20based%20documents&description=&url=https%3A%2F%2F6f4f-91-0-56-217.ngrok-free.app%2Fapi%2Frevalidate%2Ftag&on=create&on=update&on=delete&filter=_type%20in%20%5B%22post%22%2C%20%22page%22%5D&projection=%7B%22tags%22%3A%20%5B_type%2C%20_type%20%2B%20%22%3A%22%20%2B%20slug.current%5D%7D&httpMethod=POST&apiVersion=v2021-03-25&includeDrafts=&headers=%7B%7D
+
+  author, navigationZone, settings, homePage
+  -> https://www.sanity.io/manage/webhooks/share?name=Tag-based%20revalidation%20hook%20for%20non%20slug%20documents&description=&url=https%3A%2F%2F6f4f-91-0-56-217.ngrok-free.app%2Fapi%2Frevalidate%2Ftag&on=create&on=update&on=delete&filter=_type%20in%20%5B%22author%22%2C%20%22navigationZone%22%2C%20%22settings%22%2C%20%22homePage%22%5D&projection=%7B%22tags%22%3A%20%5B_type%5D%7D&httpMethod=POST&apiVersion=v2021-03-25&includeDrafts=&headers=%7B%7D
+
+  -> do not forget secret
+
 - update favicon.ico
 - add icon (.ico, .jpg, .jpeg, .png, .svg) and apple-icon (.jpg, .jpeg, .png), see: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons#image-files-ico-jpg-png
 - set up internationalization if needed, see: https://nextjs.org/docs/app/building-your-application/routing/internationalization
