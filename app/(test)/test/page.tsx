@@ -6,6 +6,8 @@ import TestPageComponentSeperate from "./component-seperate"
 export default async function TestPage() {
   const settings = await sanityFetch({
     query: settingsQuery,
+    perspective: "published",
+    stega: false,
     tags: ["settings"],
   })
 
