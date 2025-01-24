@@ -10,5 +10,9 @@ export default async function TestPage() {
   })
 
 
-  return <div>Test Page: {settings?.title}</div>
+  return (
+    <div>
+      <div>Test Page: {settings?.title}</div>
+    </div>
+  )
 }

@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import "../globals.css"
 import { TestFooter } from "./footer"
 
@@ -12,7 +13,9 @@ export default async function RootTestLayout({
         {children}
         <div>
           <b>Test footer:</b><br />
-          <TestFooter />
+          <Suspense>
+            <TestFooter />
+          </Suspense>
         </div>
       </body>
     </html>
