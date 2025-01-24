@@ -9,8 +9,7 @@ export default async function TestPageComponentAll() {
 
   return (
     <div>
-      <div>Test Page: {settings?.title}</div>
-      <div>Test Page: {"homePage?.title"}</div>
+      <div>Test Page Component: {settings?.title}</div>
     </div>
   )
 }
