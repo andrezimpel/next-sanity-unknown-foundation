@@ -5,7 +5,6 @@ export async function TestFooter() {
   const settings = await sanityFetch({
     query: settingsQuery,
     perspective: "published",
-    stega: false,
     tags: ["settings"],
   })
 
