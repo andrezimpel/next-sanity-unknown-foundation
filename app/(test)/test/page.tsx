@@ -8,6 +8,7 @@ export default async function TestPage() {
     query: settingsQuery,
     tags: ["settings"],
   })
+
   return (
     <div>
       <div>Test Page intself: {settings?.title}</div>

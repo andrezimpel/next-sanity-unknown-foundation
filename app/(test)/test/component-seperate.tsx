@@ -1,7 +1,7 @@
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { settingsQuery } from "@/sanity/lib/queries"
 
-export default async function TestPageComponentAll() {
+export default async function TestPageComponentSeperate() {
   const settings = await sanityFetch({
     query: settingsQuery,
     tags: ["settings"],
