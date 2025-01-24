@@ -1,22 +1,12 @@
-import { sanityFetch } from "@/sanity/lib/fetch"
-import { homePageQuery, settingsQuery } from "@/sanity/lib/queries"
+import TestPageComponentAll from "./component-all"
+import TestPageComponentSeperate from "./component-seperate"
 
 export default async function TestPage() {
-  const [settings, homePage] = await Promise.all([
-    sanityFetch({
-      query: settingsQuery,
-      tags: ["settings"],
-    }),
-    sanityFetch({
-      query: homePageQuery,
-      tags: ["homePage"],
-    }),
-  ])
-
   return (
     <div>
-      <div>Test Page: {settings?.title}</div>
-      <div>Test Page: {homePage?.title}</div>
+      <TestPageComponentAll />
+      <hr />
+      <TestPageComponentSeperate />
     </div>
   )
 }
