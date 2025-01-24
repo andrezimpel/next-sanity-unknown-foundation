@@ -1,6 +1,7 @@
 import { VisualEditing } from "next-sanity"
 import { draftMode } from "next/headers"
 import { Suspense } from "react"
+import AlertBanner from "../(website)/alert-banner"
 import "../globals.css"
 import { TestFooter } from "./footer"
 
@@ -14,6 +15,7 @@ export default async function RootTestLayout({
   return (
     <html lang="de" className="bg-white text-black">
       <body>
+        {isDraftMode && <AlertBanner />}
         {children}
         <div>
           <b>Test footer:</b><br />
