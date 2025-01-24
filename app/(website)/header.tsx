@@ -7,11 +7,12 @@ export async function Header() {
   const [settings, navigationZone] = await Promise.all([
     sanityFetch({
       query: settingsQuery,
-      stega: false,
+      perspective: "published",
       tags: ["settings"],
     }),
     sanityFetch({
       query: navigationZoneQuery,
+      perspective: "published",
       params: {
         identifier: "header",
       },
