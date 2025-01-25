@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     console.log({ body })
 
     revalidateTag('settings')
-    revalidatePath('/')
+    revalidatePath('/', "layout")
 
     if (!isValidSignature) {
       const message = 'Invalid signature'
