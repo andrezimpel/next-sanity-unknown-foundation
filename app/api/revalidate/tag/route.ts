@@ -1,5 +1,5 @@
 import { parseBody } from 'next-sanity/webhook'
-import { revalidateTag } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { type NextRequest, NextResponse } from 'next/server'
 
 type WebhookPayload = {
@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
     console.log({ body })
 
     revalidateTag('settings')
+    revalidatePath('/')
 
     if (!isValidSignature) {
       const message = 'Invalid signature'
