@@ -20,14 +20,12 @@ export async function sanityFetch<const QueryString extends string>({
    * When outside of the Sanity Studio we also support the Vercel Toolbar Visual Editing feature, which is only enabled in production when it's a Vercel Preview Deployment.
    */
   stega: _stega,
-  revalidate,
   tags = [],
 }: {
   query: QueryString
   params?: QueryParams | Promise<QueryParams>
   perspective?: Omit<ClientPerspective, "raw">
   stega?: boolean
-  revalidate?: number
   tags?: string[]
 }) {
   const perspective =
@@ -48,8 +46,8 @@ export async function sanityFetch<const QueryString extends string>({
       useCdn: false,
       // And we can't cache the responses as it would slow down the live preview experience
       next: {
-        revalidate: (tags.length && !revalidate) ? false : 0, // for simple, time-based revalidation
-        tags, // for tag-based revalidation
+        revalidate: 0,
+        tags
       },
     })
   }
@@ -61,8 +59,8 @@ export async function sanityFetch<const QueryString extends string>({
     // Only enable Stega in production if it's a Vercel Preview Deployment, as the Vercel Toolbar supports Visual Editing
     // When using the `published` perspective we use time-based revalidation to match the time-to-live on Sanity's API CDN (60 seconds)
     next: {
-      revalidate: (tags.length && !revalidate) ? false : revalidate, // for simple, time-based revalidation
-      tags, // for tag-based revalidation
+      revalidate: 60,
+      tags,
     },
   })
 }
