@@ -74,7 +74,7 @@ export default async function PostsPage() {
         ...(openGraphImage && {
           image: openGraphImage?.url
         }),
-        url: resolveHref("page", "posts"),
+        url: resolveHref("page", "posts", true),
         ...(page?.metaDescription && { description: page.metaDescription }),
         ...(page?._updatedAt && { dateModified: page._updatedAt })
       } as WithContext<WebPage>} />

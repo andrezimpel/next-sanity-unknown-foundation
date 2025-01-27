@@ -1,7 +1,7 @@
 import { JsonLd } from "@/components/jsonld"
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { homePageQuery, settingsQuery } from "@/sanity/lib/queries"
-import { resolveHref, resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Metadata } from 'next'
 import { WebPage, WithContext } from "schema-dts"
 
@@ -59,7 +59,7 @@ export default async function HomePage() {
         ...(openGraphImage && {
           image: openGraphImage?.url
         }),
-        url: resolveHref("page", "/"),
+        url: `${process.env.SITE_URL!}/`,
         ...(page?.metaDescription && { description: page.metaDescription }),
         ...(page?._updatedAt && { dateModified: page._updatedAt })
       } as WithContext<WebPage>} />

@@ -88,7 +88,7 @@ export default async function RootLayout({
           <Suspense>
             <Header />
           </Suspense>
-          <main className="space-y-12 py-12">{children}</main>
+          <main className="grid grid-cols-1 gap-y-12 py-12">{children}</main>
           <Suspense>
             <Footer />
           </Suspense>

@@ -112,7 +112,7 @@ export default async function PostPage({ params }: Props) {
         articleBody: toPlainText(post.content as PortableTextBlock[]),
         ...(post.date && { datePublished: post.date }),
         ...(post?._updatedAt && { dateModified: post._updatedAt }),
-        url: resolveHref("post", resolvedParams?.slug),
+        url: resolveHref("post", resolvedParams?.slug, true),
         ...(post?.metaDescription && { description: post.metaDescription }),
         ...((post?.author && post.author.name) && {
           author: {

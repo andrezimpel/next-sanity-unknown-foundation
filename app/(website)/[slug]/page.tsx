@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       index: !page?.noIndex
     },
     alternates: {
-      canonical: resolveHref("page", resolvedParams?.slug),
+      canonical: resolveHref("page", resolvedParams?.slug, true),
     }
   }
 }
