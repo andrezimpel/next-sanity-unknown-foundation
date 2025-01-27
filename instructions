@@ -1,6 +1,6 @@
 instructions
 
-- run yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest schema-dts@latest
+- run yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest schema-dts@latest postcss@latest tailwindcss@latest tailwindcss-animate@latest
 - setup .env.local remote through vercel (NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_READ_TOKEN, SITE_URL, NEXT_PUBLIC_PLAUSIBLE_DOMAIN)
 - setup webhooks for sanity to revalidate data
   page, post:

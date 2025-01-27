@@ -27,16 +27,19 @@ export function resolveOpenGraphImage(image: any, width = 1200, height = 627) {
 export function resolveHref(
   documentType?: string,
   slug?: string | null,
+  absolute?: boolean
 ): string | undefined {
   if (!slug) {
     return undefined // Return undefined if slug is not provided or is null
   }
 
+  const baseUrl = absolute ? process.env.SITE_URL! : ""
+
   switch (documentType) {
     case "page":
-      return `/${slug}`
+      return `${baseUrl}/${slug}`
     case "post":
-      return `/posts/${slug}`
+      return `${baseUrl}/posts/${slug}`
     default:
       console.warn("Invalid document type:", documentType)
       return undefined
