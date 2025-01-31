@@ -5,23 +5,22 @@ import { resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Metadata } from 'next'
 import { WebPage, WithContext } from "schema-dts"
 
-const fetchHomePage = async () => {
+const fetchHomePage = async (stega: boolean = true) => {
   return await Promise.all([
     sanityFetch({
       query: homePageQuery,
-      tags: ["homePage"],
+      stega,
     }),
     sanityFetch({
       query: settingsQuery,
-      stega: false,
-      tags: ["settings"],
+      stega,
     }),
   ])
 }
 
 // Function to generate metadata
 export async function generateMetadata(): Promise<Metadata> {
-  const [homePage, settings] = await fetchHomePage()
+  const [homePage, settings] = await fetchHomePage(false)
 
   const ogImage = resolveOpenGraphImage(homePage?.ogImage)
   const title = `${homePage?.title} | ${settings?.title}`
@@ -43,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [page] = await fetchHomePage()
+  const [page] = await fetchHomePage(true)
 
   const openGraphImage = resolveOpenGraphImage(page?.ogImage)
 

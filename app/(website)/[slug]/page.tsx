@@ -23,7 +23,7 @@ export async function generateStaticParams() {
   return await sanityFetch({
     query: pagePathsQuery,
     perspective: "published",
-    stega: false,
+    stega: false
   })
 }
 
