@@ -20,11 +20,15 @@ export type Props = {
 }
 
 export async function generateStaticParams() {
-  return await sanityFetch({
+  const pagePaths = await sanityFetch({
     query: pagePathsQuery,
     perspective: "published",
     stega: false
   })
+
+  const skipPaths = ["posts"]
+
+  return pagePaths.filter((page) => page.slug && !skipPaths.includes(page.slug)).map((page) => ({ slug: page.slug }))
 }
 
 // Function to generate metadata
