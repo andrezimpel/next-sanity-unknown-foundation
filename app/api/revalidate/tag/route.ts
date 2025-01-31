@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     // }
 
     revalidatePath('/', 'layout')
-    await new Promise(resolve => setTimeout(resolve, 100)) // Wait for 100ms
+    await new Promise(resolve => setTimeout(resolve, 1000)) // Wait for 1000ms
     revalidatePath('/', 'layout')
 
     return NextResponse.json({ body })
