@@ -22,7 +22,7 @@
 [x] add apple and android icons
 [x] check generate viewport
 [x] portable text tip preview
-[ ] use revalidate instead if irs to make hosting cheaper
+[x] use revalidate instead if irs to make hosting cheaper
 [ ] add docs with step by step instructions to what needs to be changed
 [ ] clean up sanity queries
 [ ] environment variables
