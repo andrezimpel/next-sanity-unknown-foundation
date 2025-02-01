@@ -1,7 +1,7 @@
 instructions
 
 - run yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest schema-dts@latest postcss@latest tailwindcss@latest tailwindcss-animate@latest
-- setup .env.local remote through vercel (NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_READ_TOKEN, SITE_URL, NEXT_PUBLIC_PLAUSIBLE_DOMAIN)
+- setup .env.local remote through vercel (NEXT_PUBLIC_PLAUSIBLE_DOMAIN, NEXT_PUBLIC_SANITY_DATASET, NEXT_PUBLIC_SANITY_PROJECT_ID, SANITY_API_READ_TOKEN, SANITY_REVALIDATE_SECRET, SITE_URL)
 - setup webhooks for sanity to revalidate data
   page, post:
   -> https://www.sanity.io/manage/webhooks/share?name=Tag-based%20revalidation%20hook%20for%20slug%20based%20documents&description=&url=https%3A%2F%2F6f4f-91-0-56-217.ngrok-free.app%2Fapi%2Frevalidate%2Ftag&on=create&on=update&on=delete&filter=&projection=&httpMethod=POST&apiVersion=v2021-03-25&includeDrafts=&headers=%7B%7D

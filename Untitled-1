@@ -23,6 +23,6 @@
 [x] check generate viewport
 [x] portable text tip preview
 [x] use revalidate instead if irs to make hosting cheaper
-[ ] add docs with step by step instructions to what needs to be changed
-[ ] clean up sanity queries
-[ ] environment variables
+[x] add docs with step by step instructions to what needs to be changed
+[x] clean up sanity queries
+[x] environment variables
