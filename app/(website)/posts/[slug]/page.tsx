@@ -66,29 +66,26 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <>
-      <div className="container mx-auto" itemScope itemType="https://schema.org/BlogPosting">
+      <div className="container mx-auto">
         <article className="space-y-8">
-          <h1 className="text-4xl font-bold" itemProp="headline">{post.title}</h1>
-          <div className="mb-8 sm:mx-0 md:mb-16" itemProp="image">
+          <h1 className="text-4xl font-bold">{post.title}</h1>
+          <div className="mb-8 sm:mx-0 md:mb-16">
             <PostCoverImage image={post.coverImage} />
           </div>
           {post.date && (
-            <div className="my-4 text-sm" itemProp="datePublished" content={post.date}>
+            <div className="my-4 text-sm">
               <DateComponent dateString={post.date} />
             </div>
           )}
           {post.author && (
-            <div className="mt-6 mb-12 md:block" itemProp="author" itemScope itemType="https://schema.org/Person">
+            <div className="mt-6 mb-12 md:block">
               <Avatar name={post.author.name} picture={post.author.picture} />
-              <meta itemProp="name" content={post.author.name} />
             </div>
           )}
           {post.content?.length && (
-            <div itemProp="articleBody">
-              <PortableText
-                value={post.content as PortableTextBlock[]}
-              />
-            </div>
+            <PortableText
+              value={post.content as PortableTextBlock[]}
+            />
           )}
         </article>
         <aside className="mt-12 space-y-4">
