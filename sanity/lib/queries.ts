@@ -1,5 +1,6 @@
 import { defineQuery } from "next-sanity"
 
+// Common fields
 const metafields = `
   metaDescription,
   ogTitle,
@@ -7,77 +8,18 @@ const metafields = `
   noIndex
 `
 
+const coverImageFields = `
+  coverImage {
+    ...,
+    "lqip": asset->metadata.lqip
+  }
+`
+
+const authorFields = `
+  "author": author->{"name": coalesce(name, "Anonymous"), picture, position}
+`
+
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
-export const homePageQuery = defineQuery(`*[_type == "homePage"][0] {
-  ...,
-  ${metafields}
-}`)
-
-export const pagePathsQuery = defineQuery(`
-  *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {
-    "slug": slug.current,
-    _updatedAt,
-    _id,
-    noIndex
-  }
-`)
-
-export const postPathsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
-    "slug": slug.current,
-    _updatedAt,
-    _id,
-    noIndex
-  }
-`)
-
-export const postsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {
-    _id,
-    "title": coalesce(title, "Untitled"),
-    "slug": slug.current,
-    excerpt,
-    coverImage {
-      ...,
-      "lqip": asset->metadata.lqip
-    },
-    "date": coalesce(date, _updatedAt),
-    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}
-  }
-`)
-
-export const postQuery = defineQuery(`
-  *[_type == "post" && slug.current == $slug] [0] {
-    _id,
-    _updatedAt,
-    "title": coalesce(title, "Untitled"),
-    "slug": slug.current,
-    excerpt,
-    content,
-    coverImage {
-      ...,
-      "lqip": asset->metadata.lqip
-    },
-    "date": coalesce(date, _updatedAt),
-    "author": author->{"name": coalesce(name, "Anonymous"), picture, position},
-    ${metafields}
-  }
-`)
-
-export const moreStoriesQuery = defineQuery(`
-  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
-    _id,
-    "title": coalesce(title, "Untitled"),
-    "slug": slug.current,
-    excerpt,
-    coverImage {
-      ...,
-      "lqip": asset->metadata.lqip
-    },
-    "date": coalesce(date, _updatedAt),
-    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}
-  }
-`)
 
 export const navigationZoneQuery = defineQuery(`
   *[_type == "navigationZone" && identifier == $identifier][0] {
@@ -92,6 +34,70 @@ export const navigationZoneQuery = defineQuery(`
   }
 `)
 
+export const homePageQuery = defineQuery(`*[_type == "homePage"][0] {
+  ...,
+  ${metafields}
+}`)
+
+export const postPathsQuery = defineQuery(`
+  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
+    "slug": slug.current,
+    _updatedAt,
+    _id,
+    noIndex
+  }
+`)
+
+// posts
+export const postsQuery = defineQuery(`
+  *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {
+    _id,
+    "title": coalesce(title, "Untitled"),
+    "slug": slug.current,
+    excerpt,
+    ${coverImageFields},
+    "date": coalesce(date, _updatedAt),
+    ${authorFields}
+  }
+`)
+
+export const postQuery = defineQuery(`
+  *[_type == "post" && slug.current == $slug] [0] {
+    _id,
+    _updatedAt,
+    "title": coalesce(title, "Untitled"),
+    "slug": slug.current,
+    excerpt,
+    content,
+    ${coverImageFields},
+    "date": coalesce(date, _updatedAt),
+    ${authorFields},
+    ${metafields}
+  }
+`)
+
+export const moreStoriesQuery = defineQuery(`
+  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
+    _id,
+    "title": coalesce(title, "Untitled"),
+    "slug": slug.current,
+    excerpt,
+    ${coverImageFields},
+    "date": coalesce(date, _updatedAt),
+    ${authorFields}
+  }
+`)
+
+// pages
+export const pagePathsQuery = defineQuery(`
+  *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {
+    "slug": slug.current,
+    _updatedAt,
+    _id,
+    noIndex
+  }
+`)
+
 export const pageQuery = defineQuery(`
   *[_type == "page" && slug.current == $slug] [0] {
     _id,
@@ -99,10 +105,7 @@ export const pageQuery = defineQuery(`
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
     content,
-    coverImage {
-      ...,
-      "lqip": asset->metadata.lqip
-    },
+    ${coverImageFields},
     ${metafields}
   }
 `)
