@@ -80,7 +80,7 @@ export default async function RootLayout({
   const { isEnabled: isDraftMode } = await draftMode()
 
   return (
-    <html lang={locale} className={`${inter.variable} bg-white text-black`}>
+    <html lang={locale.split('_')[0]} className={`${inter.variable} bg-white text-black`}>
       <body>
         <Provider>
           {isDraftMode && <AlertBanner />}
