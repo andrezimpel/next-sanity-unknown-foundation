@@ -20,13 +20,13 @@ export async function sanityFetch<const QueryString extends string>({
    * When outside of the Sanity Studio we also support the Vercel Toolbar Visual Editing feature, which is only enabled in production when it's a Vercel Preview Deployment.
    */
   stega: _stega,
-  tags = [],
+  // tags = [],
 }: {
   query: QueryString
   params?: QueryParams | Promise<QueryParams>
   perspective?: Omit<ClientPerspective, "raw">
   stega?: boolean
-  tags?: string[]
+  // tags?: string[]
 }) {
   const perspective =
     _perspective || (await draftMode()).isEnabled
