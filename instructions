@@ -16,6 +16,7 @@ instructions
 - set up internationalization if needed, see: https://nextjs.org/docs/app/building-your-application/routing/internationalization
 - replace viewport theme color in layout.tsx
 - setup plausible analytics at https://plausible.io/
+- check if irs suits this project
 
 create content
 - create settings

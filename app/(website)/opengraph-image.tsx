@@ -4,8 +4,7 @@ import { ImageResponse } from 'next/og'
 
 async function fetchPage() {
   return sanityFetch({
-    query: homePageQuery,
-    tags: ["homePage"],
+    query: homePageQuery
   })
 }
 
