@@ -36,7 +36,7 @@ export async function sanityFetch<const QueryString extends string>({
     _stega ||
     perspective === "previewDrafts" ||
     process.env.VERCEL_ENV === "preview"
-  if (perspective === "previewDrafts") {
+  if (perspective === "previewDrafts" || process.env.NODE_ENV === "development") {
     return client.fetch(query, await params, {
       stega,
       perspective: "previewDrafts",
