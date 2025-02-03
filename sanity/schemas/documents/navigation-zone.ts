@@ -4,6 +4,19 @@ export default defineType({
   name: 'navigationZone',
   title: 'Navigation Zone',
   type: 'document',
+  preview: {
+    select: {
+      title: 'identifier',
+      language: 'language',
+    },
+    prepare(selection) {
+      const { title, language } = selection
+      return {
+        title: title || 'No title',
+        subtitle: language || 'No language',
+      }
+    },
+  },
   fields: [
     defineField({
       name: 'identifier',
