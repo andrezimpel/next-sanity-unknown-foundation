@@ -25,7 +25,7 @@ export async function Footer() {
         {navigationZone?.items?.map((item, index) => (
           <Link
             key={item?._key || index}
-            href={resolveHref(item?.link?._type, item?.link?.slug) || item?.url || ""}
+            href={item?.url || resolveHref(item?.link?._type, item?.link?.slug) || ""}
             className="px-2 py-1 hover:underline"
             target={item?.url && !item?.url.startsWith(process.env.SITE_URL || "") ? "_blank" : "_self"}
           >
