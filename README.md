@@ -175,6 +175,33 @@ To implement internationalization in your project, follow these steps:
      })
      ```
 
+  **Update the Slug Field**: Add a custom validation rule to the slug field in your document schema.
+
+   ```javascript
+   export default {
+     name: 'yourDocumentType',
+     type: 'document',
+     title: 'Your Document Title',
+     fields: [
+       // ... other fields ...
+       {
+         name: 'slug',
+         type: 'slug',
+         title: 'Slug',
+         options: {
+           source: 'title', // or another field that generates the slug
+           maxLength: 96,
+         },
+         validation: (Rule) => Rule.required().custom(async (slug, context) => {
+           const isUnique = await isUniqueOtherThanLanguage(slug.current, context)
+           return isUnique || 'This slug is already in use for the selected language.'
+         }),
+       },
+       // ... other fields ...
+     ],
+   }
+   ```
+
 7. **Querying Translations:**
    - Use GROQ to query translations:
      ```javascript
