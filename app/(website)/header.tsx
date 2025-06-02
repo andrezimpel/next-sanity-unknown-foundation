@@ -23,16 +23,19 @@ export async function Header() {
         {settings?.title || "Untitled"}
       </Link>
       <nav>
-        {navigationZone?.items?.map((item, index) => (
-          <Link
-            key={item?._key || index}
-            href={item?.url || resolveHref(item?.link?._type, item?.link?.slug) || ""}
-            className="px-2 py-1"
-            target={item?.url && !item?.url.startsWith(process.env.SITE_URL || "") ? "_blank" : "_self"}
-          >
-            {item?.title || item?.link?.title || "Untitled"}
-          </Link>
-        ))}
+        <ul>
+          {navigationZone?.items?.map((item, index) => (
+            <li key={item?._key || index}>
+              <Link
+                href={item?.url || resolveHref(item?.link?._type, item?.link?.slug) || ""}
+                className="px-2 py-1"
+                target={item?.url && !item?.url.startsWith(process.env.SITE_URL || "") ? "_blank" : "_self"}
+              >
+                {item?.title || item?.link?.title || "Untitled"}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </nav>
     </header>
   )
