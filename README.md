@@ -23,7 +23,7 @@ Set up your `.env.local` file with the following environment variables through V
 
 Configure webhooks in Sanity to revalidate data for pages and posts. Use the following URL for the webhook:
 
-- [Sanity Webhook for Tag-based Revalidation](https://www.sanity.io/manage/webhooks/share?name=Tag-based%20revalidation%20hook%20for%20slug%20based%20documents&description=&url=https%3A%2F%2F6f4f-91-0-56-217.ngrok-free.app%2Fapi%2Frevalidate&on=create&on=update&on=delete&filter=_type%20in%20%5B%22post%22%2C%20%22page%22%2C%20%22settings%22%2C%20%22homePage%22%2C%20%22navigationZone%22%2C%20%22author%22%5D&projection=%7B%22tags%22%3A%20%5B_type%2C%20_type%20%2B%20%22%3A%22%20%2B%20slug.current%5D%7D&httpMethod=POST&apiVersion=v2025-02-19&includeDrafts=&includeAllVersions=&headers=%7B%7D)
+- [Sanity Webhook for Tag-based Revalidation](https://www.sanity.io/manage/webhooks/share?name=Tag-based%20revalidation%20hook%20for%20slug%20based%20documents%202&description=&url=https%3A%2F%2F6f4f-91-0-56-217.ngrok-free.app%2Fapi%2Frevalidate&on=create&on=update&on=delete&filter=_type%20in%20%5B%22post%22%2C%20%22page%22%2C%20%22homePage%22%2C%20%22settings%22%5D&projection=%7B%22tags%22%3A%20%5B_type%2C%20_type%20%2B%20%22%3A%22%20%2B%20slug.current%5D%7D&httpMethod=POST&apiVersion=v2025-02-19&includeDrafts=&includeAllVersions=&headers=%7B%7D)
 
 > **Note:** Do not forget to include the secret.
 
