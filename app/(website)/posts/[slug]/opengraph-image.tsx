@@ -1,10 +1,10 @@
 import { sanityFetch } from '@/sanity/lib/fetch'
-import { pageQuery } from '@/sanity/lib/queries'
+import { postQuery } from '@/sanity/lib/queries'
 import { ImageResponse } from 'next/og'
 import { Props } from './page'
 
-async function fetchPage({ params }: Props) {
-  return sanityFetch({ query: pageQuery, params })
+async function fetchPost({ params }: Props) {
+  return sanityFetch({ query: postQuery, params })
 }
 
 const size = {
@@ -13,11 +13,11 @@ const size = {
 }
 
 export async function generateImageMetadata({ params }: Props) {
-  const page = await fetchPage({ params })
+  const post = await fetchPost({ params })
   return [
     {
       id: 'og-image',
-      alt: page?.title,
+      alt: post?.title,
       size,
       contentType: 'image/png',
     }
@@ -26,7 +26,7 @@ export async function generateImageMetadata({ params }: Props) {
 
 // Image generation
 export default async function Image({ params }: Props) {
-  const page = await fetchPage({ params })
+  const post = await fetchPost({ params })
 
   // Font
   // const interSemiBold = fetch(
@@ -47,7 +47,7 @@ export default async function Image({ params }: Props) {
           justifyContent: 'center',
         }}
       >
-        {page?.title || "Untitled"}
+        {post?.title || "Untitled"}
       </div>
     ),
     // ImageResponse options

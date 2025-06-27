@@ -36,7 +36,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await fetchPost({ params })
   const resolvedParams = await params
-  const ogImage = resolveOpenGraphImage(post?.ogImage)
+  const ogImage = resolveOpenGraphImage(post?.ogImage || post?.coverImage)
 
   return {
     ...(post?.title && { title: post?.title }),
