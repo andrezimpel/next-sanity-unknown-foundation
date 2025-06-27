@@ -28,7 +28,7 @@ export function PostCoverImage({ image }: { image: NonNullable<PostQueryResult>[
     <picture>
       <source media={`(min-width: var(--breakpoint-md))`} srcSet={desktop} />
       <source media={`(max-width: var(--breakpoint-md))`} srcSet={mobile} />
-      <img {...rest} />
+      <img {...rest} alt={image?.alt || ""} />
     </picture>
   )
 }

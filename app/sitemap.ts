@@ -9,11 +9,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       query: pagePathsQuery,
       perspective: "published",
       stega: false,
+      tags: ["page"]
     }),
     sanityFetch({
       query: postPathsQuery,
       perspective: "published",
       stega: false,
+      tags: ["post", "author"]
     }),
   ])
 

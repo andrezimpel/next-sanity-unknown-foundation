@@ -6,13 +6,15 @@ import Link from "next/link"
 export async function Footer() {
   const [settings, navigationZone] = await Promise.all([
     sanityFetch({
-      query: settingsQuery
+      query: settingsQuery,
+      tags: ["settings"]
     }),
     sanityFetch({
       query: navigationZoneQuery,
       params: {
         identifier: "legal",
-      }
+      },
+      tags: ["navigationZone", "post", "page", "homePage"]
     })
   ])
 

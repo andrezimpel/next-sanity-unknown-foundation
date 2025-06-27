@@ -13,61 +13,6 @@
  */
 
 // Source: schema.json
-export type SanityImagePaletteSwatch = {
-  _type: "sanity.imagePaletteSwatch";
-  background?: string;
-  foreground?: string;
-  population?: number;
-  title?: string;
-};
-
-export type SanityImagePalette = {
-  _type: "sanity.imagePalette";
-  darkMuted?: SanityImagePaletteSwatch;
-  lightVibrant?: SanityImagePaletteSwatch;
-  darkVibrant?: SanityImagePaletteSwatch;
-  vibrant?: SanityImagePaletteSwatch;
-  dominant?: SanityImagePaletteSwatch;
-  lightMuted?: SanityImagePaletteSwatch;
-  muted?: SanityImagePaletteSwatch;
-};
-
-export type SanityImageDimensions = {
-  _type: "sanity.imageDimensions";
-  height?: number;
-  width?: number;
-  aspectRatio?: number;
-};
-
-export type SanityFileAsset = {
-  _id: string;
-  _type: "sanity.fileAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  source?: SanityAssetSourceData;
-};
-
-export type Geopoint = {
-  _type: "geopoint";
-  lat?: number;
-  lng?: number;
-  alt?: number;
-};
-
 export type YouTube = {
   _type: "youTube";
   url?: string;
@@ -131,6 +76,7 @@ export type Post = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -146,6 +92,7 @@ export type Post = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -167,6 +114,7 @@ export type Post = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -190,6 +138,7 @@ export type Author = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -229,6 +178,7 @@ export type Page = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -243,6 +193,7 @@ export type Page = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -257,18 +208,13 @@ export type Page = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
     _type: "image";
   };
   noIndex?: boolean;
-};
-
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
 };
 
 export type Settings = {
@@ -286,6 +232,7 @@ export type Settings = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -308,69 +255,13 @@ export type HomePage = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
     _type: "image";
   };
   noIndex?: boolean;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type SanityImageAsset = {
-  _id: string;
-  _type: "sanity.imageAsset";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  originalFilename?: string;
-  label?: string;
-  title?: string;
-  description?: string;
-  altText?: string;
-  sha1hash?: string;
-  extension?: string;
-  mimeType?: string;
-  size?: number;
-  assetId?: string;
-  uploadId?: string;
-  path?: string;
-  url?: string;
-  metadata?: SanityImageMetadata;
-  source?: SanityAssetSourceData;
-};
-
-export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
-
-export type SanityImageMetadata = {
-  _type: "sanity.imageMetadata";
-  location?: Geopoint;
-  dimensions?: SanityImageDimensions;
-  palette?: SanityImagePalette;
-  lqip?: string;
-  blurHash?: string;
-  hasAlpha?: boolean;
-  isOpaque?: boolean;
 };
 
 export type SanityAssistInstructionTask = {
@@ -494,7 +385,125 @@ export type SanityAssistSchemaTypeField = {
   } & SanityAssistInstruction>;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | YouTube | NavigationZone | Post | Author | Page | Slug | Settings | HomePage | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField;
+export type SanityImagePaletteSwatch = {
+  _type: "sanity.imagePaletteSwatch";
+  background?: string;
+  foreground?: string;
+  population?: number;
+  title?: string;
+};
+
+export type SanityImagePalette = {
+  _type: "sanity.imagePalette";
+  darkMuted?: SanityImagePaletteSwatch;
+  lightVibrant?: SanityImagePaletteSwatch;
+  darkVibrant?: SanityImagePaletteSwatch;
+  vibrant?: SanityImagePaletteSwatch;
+  dominant?: SanityImagePaletteSwatch;
+  lightMuted?: SanityImagePaletteSwatch;
+  muted?: SanityImagePaletteSwatch;
+};
+
+export type SanityImageDimensions = {
+  _type: "sanity.imageDimensions";
+  height?: number;
+  width?: number;
+  aspectRatio?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityFileAsset = {
+  _id: string;
+  _type: "sanity.fileAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  altText?: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
+  source?: SanityAssetSourceData;
+};
+
+export type SanityImageAsset = {
+  _id: string;
+  _type: "sanity.imageAsset";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  originalFilename?: string;
+  label?: string;
+  title?: string;
+  description?: string;
+  altText?: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
+  uploadId?: string;
+  path?: string;
+  url?: string;
+  metadata?: SanityImageMetadata;
+  source?: SanityAssetSourceData;
+};
+
+export type SanityImageMetadata = {
+  _type: "sanity.imageMetadata";
+  location?: Geopoint;
+  dimensions?: SanityImageDimensions;
+  palette?: SanityImagePalette;
+  lqip?: string;
+  blurHash?: string;
+  hasAlpha?: boolean;
+  isOpaque?: boolean;
+};
+
+export type Geopoint = {
+  _type: "geopoint";
+  lat?: number;
+  lng?: number;
+  alt?: number;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type SanityAssetSourceData = {
+  _type: "sanity.assetSourceData";
+  name?: string;
+  id?: string;
+  url?: string;
+};
+
+export type AllSanitySchemaTypes = YouTube | NavigationZone | Post | Author | Page | Settings | HomePage | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -514,213 +523,12 @@ export type SettingsQueryResult = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
   };
 } | null;
-// Variable: homePageQuery
-// Query: *[_type == "homePage"][0] {  ...,    metaDescription,  ogTitle,  ogImage,  noIndex}
-export type HomePageQueryResult = {
-  _id: string;
-  _type: "homePage";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  metaDescription: string | null;
-  ogTitle: string | null;
-  ogImage: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  } | null;
-  noIndex: boolean | null;
-} | null;
-// Variable: pagePathsQuery
-// Query: *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current,    _updatedAt,    _id,    noIndex  }
-export type PagePathsQueryResult = Array<{
-  slug: string | null;
-  _updatedAt: string;
-  _id: string;
-  noIndex: boolean | null;
-}>;
-// Variable: postPathsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current,    _updatedAt,    _id,    noIndex  }
-export type PostPathsQueryResult = Array<{
-  slug: string | null;
-  _updatedAt: string;
-  _id: string;
-  noIndex: boolean | null;
-}>;
-// Variable: postsQuery
-// Query: *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage {      ...,      "lqip": asset->metadata.lqip    },    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
-export type PostsQueryResult = Array<{
-  _id: string;
-  title: string | "Untitled";
-  slug: string | null;
-  excerpt: string | null;
-  coverImage: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    lqip: string | null;
-  } | null;
-  date: string;
-  author: {
-    name: string | "Anonymous";
-    picture: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
-    position: string | null;
-  } | null;
-}>;
-// Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content,    coverImage {      ...,      "lqip": asset->metadata.lqip    },    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position},      metaDescription,  ogTitle,  ogImage,  noIndex  }
-export type PostQueryResult = {
-  _id: string;
-  _updatedAt: string;
-  title: string | "Untitled";
-  slug: string | null;
-  excerpt: string | null;
-  content: Array<{
-    _key: string;
-  } & YouTube | {
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal" | "tip";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  } | {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-    _key: string;
-  }> | null;
-  coverImage: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    lqip: string | null;
-  } | null;
-  date: string;
-  author: {
-    name: string | "Anonymous";
-    picture: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
-    position: string | null;
-  } | null;
-  metaDescription: string | null;
-  ogTitle: string | null;
-  ogImage: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  } | null;
-  noIndex: boolean | null;
-} | null;
-// Variable: moreStoriesQuery
-// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    coverImage {      ...,      "lqip": asset->metadata.lqip    },    "date": coalesce(date, _updatedAt),    "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
-export type MoreStoriesQueryResult = Array<{
-  _id: string;
-  title: string | "Untitled";
-  slug: string | null;
-  excerpt: string | null;
-  coverImage: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    lqip: string | null;
-  } | null;
-  date: string;
-  author: {
-    name: string | "Anonymous";
-    picture: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
-    position: string | null;
-  } | null;
-}>;
 // Variable: navigationZoneQuery
 // Query: *[_type == "navigationZone" && identifier == $identifier][0] {    items[] {      ...,      link->{        ...,        title,        "slug": slug.current,      }    }  }
 export type NavigationZoneQueryResult = {
@@ -760,6 +568,7 @@ export type NavigationZoneQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
@@ -772,6 +581,7 @@ export type NavigationZoneQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -786,6 +596,7 @@ export type NavigationZoneQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -826,6 +637,7 @@ export type NavigationZoneQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         _type: "image";
@@ -839,6 +651,7 @@ export type NavigationZoneQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -860,6 +673,7 @@ export type NavigationZoneQueryResult = {
           _weak?: boolean;
           [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
         };
+        media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
         alt?: string;
@@ -872,8 +686,219 @@ export type NavigationZoneQueryResult = {
     _key: string;
   }> | null;
 } | null;
+// Variable: homePageQuery
+// Query: *[_type == "homePage"][0] {  ...,    metaDescription,  ogTitle,  ogImage,  noIndex}
+export type HomePageQueryResult = {
+  _id: string;
+  _type: "homePage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  metaDescription: string | null;
+  ogTitle: string | null;
+  ogImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  noIndex: boolean | null;
+} | null;
+// Variable: postPathsQuery
+// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current,    _updatedAt,    _id,    noIndex  }
+export type PostPathsQueryResult = Array<{
+  slug: string | null;
+  _updatedAt: string;
+  _id: string;
+  noIndex: boolean | null;
+}>;
+// Variable: postsQuery
+// Query: *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,      coverImage {    ...,    "lqip": asset->metadata.lqip  },    "date": coalesce(date, _updatedAt),      "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
+export type PostsQueryResult = Array<{
+  _id: string;
+  title: string | "Untitled";
+  slug: string | null;
+  excerpt: string | null;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    lqip: string | null;
+  } | null;
+  date: string;
+  author: {
+    name: string | "Anonymous";
+    picture: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    position: string | null;
+  } | null;
+}>;
+// Variable: postQuery
+// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content,      coverImage {    ...,    "lqip": asset->metadata.lqip  },    "date": coalesce(date, _updatedAt),      "author": author->{"name": coalesce(name, "Anonymous"), picture, position},      metaDescription,  ogTitle,  ogImage,  noIndex  }
+export type PostQueryResult = {
+  _id: string;
+  _updatedAt: string;
+  title: string | "Untitled";
+  slug: string | null;
+  excerpt: string | null;
+  content: Array<{
+    _key: string;
+  } & YouTube | {
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal" | "tip";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }> | null;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    lqip: string | null;
+  } | null;
+  date: string;
+  author: {
+    name: string | "Anonymous";
+    picture: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    position: string | null;
+  } | null;
+  metaDescription: string | null;
+  ogTitle: string | null;
+  ogImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  noIndex: boolean | null;
+} | null;
+// Variable: moreStoriesQuery
+// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,      coverImage {    ...,    "lqip": asset->metadata.lqip  },    "date": coalesce(date, _updatedAt),      "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
+export type MoreStoriesQueryResult = Array<{
+  _id: string;
+  title: string | "Untitled";
+  slug: string | null;
+  excerpt: string | null;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    lqip: string | null;
+  } | null;
+  date: string;
+  author: {
+    name: string | "Anonymous";
+    picture: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    position: string | null;
+  } | null;
+}>;
+// Variable: pagePathsQuery
+// Query: *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {    "slug": slug.current,    _updatedAt,    _id,    noIndex  }
+export type PagePathsQueryResult = Array<{
+  slug: string | null;
+  _updatedAt: string;
+  _id: string;
+  noIndex: boolean | null;
+}>;
 // Variable: pageQuery
-// Query: *[_type == "page" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    content,    coverImage {      ...,      "lqip": asset->metadata.lqip    },      metaDescription,  ogTitle,  ogImage,  noIndex  }
+// Query: *[_type == "page" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    content,      coverImage {    ...,    "lqip": asset->metadata.lqip  },      metaDescription,  ogTitle,  ogImage,  noIndex  }
 export type PageQueryResult = {
   _id: string;
   _updatedAt: string;
@@ -905,6 +930,7 @@ export type PageQueryResult = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     _type: "image";
@@ -917,6 +943,7 @@ export type PageQueryResult = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -932,6 +959,7 @@ export type PageQueryResult = {
       _weak?: boolean;
       [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
     };
+    media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
@@ -945,13 +973,13 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"settings\"][0]": SettingsQueryResult;
-    "*[_type == \"homePage\"][0] {\n  ...,\n  \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n}": HomePageQueryResult;
-    "\n  *[_type == \"page\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current,\n    _updatedAt,\n    _id,\n    noIndex\n  }\n": PagePathsQueryResult;
-    "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current,\n    _updatedAt,\n    _id,\n    noIndex\n  }\n": PostPathsQueryResult;
-    "\n  *[_type == \"post\" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": PostsQueryResult;
-    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position},\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
-    "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \"date\": coalesce(date, _updatedAt),\n    \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n  }\n": MoreStoriesQueryResult;
     "\n  *[_type == \"navigationZone\" && identifier == $identifier][0] {\n    items[] {\n      ...,\n      link->{\n        ...,\n        title,\n        \"slug\": slug.current,\n      }\n    }\n  }\n": NavigationZoneQueryResult;
-    "\n  *[_type == \"page\" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    content,\n    coverImage {\n      ...,\n      \"lqip\": asset->metadata.lqip\n    },\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PageQueryResult;
+    "*[_type == \"homePage\"][0] {\n  ...,\n  \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n}": HomePageQueryResult;
+    "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current,\n    _updatedAt,\n    _id,\n    noIndex\n  }\n": PostPathsQueryResult;
+    "\n  *[_type == \"post\" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    \n  coverImage {\n    ...,\n    \"lqip\": asset->metadata.lqip\n  }\n,\n    \"date\": coalesce(date, _updatedAt),\n    \n  \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n\n  }\n": PostsQueryResult;
+    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    content,\n    \n  coverImage {\n    ...,\n    \"lqip\": asset->metadata.lqip\n  }\n,\n    \"date\": coalesce(date, _updatedAt),\n    \n  \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n,\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PostQueryResult;
+    "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    _id,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    excerpt,\n    \n  coverImage {\n    ...,\n    \"lqip\": asset->metadata.lqip\n  }\n,\n    \"date\": coalesce(date, _updatedAt),\n    \n  \"author\": author->{\"name\": coalesce(name, \"Anonymous\"), picture, position}\n\n  }\n": MoreStoriesQueryResult;
+    "\n  *[_type == \"page\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \"slug\": slug.current,\n    _updatedAt,\n    _id,\n    noIndex\n  }\n": PagePathsQueryResult;
+    "\n  *[_type == \"page\" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    \"title\": coalesce(title, \"Untitled\"),\n    \"slug\": slug.current,\n    content,\n    \n  coverImage {\n    ...,\n    \"lqip\": asset->metadata.lqip\n  }\n,\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n": PageQueryResult;
   }
 }

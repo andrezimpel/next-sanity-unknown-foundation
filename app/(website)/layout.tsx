@@ -24,6 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
     query: settingsQuery,
     // Metadata should never contain stega
     stega: false,
+    tags: ["settings"]
   })
   const title = settings?.title || "Replace this title"
   const description = settings?.description

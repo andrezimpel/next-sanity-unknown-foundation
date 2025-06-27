@@ -4,7 +4,7 @@ import { ImageResponse } from 'next/og'
 import { Props } from './page'
 
 async function fetchPost({ params }: Props) {
-  return sanityFetch({ query: postQuery, params })
+  return sanityFetch({ query: postQuery, params, tags: ["post"] })
 }
 
 const size = {

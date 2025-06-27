@@ -5,15 +5,20 @@ import { resolveOpenGraphImage } from "@/sanity/lib/utils"
 import { Metadata } from 'next'
 import { WebPage, WithContext } from "schema-dts"
 
+// Add this to make the page static
+export const dynamic = 'force-static'
+
 const fetchHomePage = async (stega: boolean = true) => {
   return await Promise.all([
     sanityFetch({
       query: homePageQuery,
       stega,
+      tags: ["homePage"]
     }),
     sanityFetch({
       query: settingsQuery,
       stega,
+      tags: ["settings"]
     }),
   ])
 }

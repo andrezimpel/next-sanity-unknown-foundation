@@ -11,7 +11,8 @@ import { WebPage, WithContext } from 'schema-dts'
 async function fetchPage({ params }: Props) {
   return sanityFetch({
     query: pageQuery,
-    params
+    params,
+    tags: ["page"]
   })
 }
 

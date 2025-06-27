@@ -7,7 +7,8 @@ async function fetchPage() {
     query: pageQuery,
     params: {
       slug: 'posts'
-    }
+    },
+    tags: ["page"]
   })
 }
 

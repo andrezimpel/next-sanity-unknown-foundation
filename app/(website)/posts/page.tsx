@@ -9,6 +9,9 @@ import { PortableTextBlock } from "next-sanity"
 import { notFound } from "next/navigation"
 import { WebPage, WithContext } from "schema-dts"
 
+// Add this to make the page static
+export const dynamic = 'force-static'
+
 async function fetchPosts() {
   return sanityFetch({
     query: postsQuery,
@@ -17,6 +20,7 @@ async function fetchPosts() {
       from: 0,
       to: 12,
     },
+    tags: ["post", "author"]
   })
 }
 
@@ -26,6 +30,7 @@ async function fetchPage() {
     params: {
       slug: "posts",
     },
+    tags: ["page"]
   })
 }
 

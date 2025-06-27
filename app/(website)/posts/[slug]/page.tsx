@@ -21,6 +21,7 @@ async function fetchPost({ params }: Props) {
   return await sanityFetch({
     query: postQuery,
     params: params,
+    tags: ["post", "author"]
   })
 }
 
@@ -28,7 +29,8 @@ export async function generateStaticParams() {
   return await sanityFetch({
     query: postPathsQuery,
     perspective: "published",
-    stega: false
+    stega: false,
+    tags: ["post"]
   })
 }
 
