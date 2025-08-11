@@ -20,6 +20,12 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   const disallow = [
     ...pages.filter(page => page.noIndex).map(page => resolveHref("page", page.slug!)),
     ...posts.filter(post => post.noIndex).map(post => resolveHref("post", post.slug!)),
+    // Next.js crawl budget performance rules
+    "/_next/*.json$",
+    "/_next/*_buildManifest.js$",
+    "/_next/*_middlewareManifest.js$",
+    "/_next/*_ssgManifest.js$",
+    "/_next/*.js$",
   ]
 
   return {
