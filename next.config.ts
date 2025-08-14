@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
     SC_DISABLE_SPEEDY: "false",
   },
   images: {
+    minimumCacheTTL: 2678400,
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: "https",
