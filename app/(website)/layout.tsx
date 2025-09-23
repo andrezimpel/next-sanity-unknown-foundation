@@ -1,9 +1,7 @@
 import "../globals.css"
 
 import type { Metadata, Viewport } from "next"
-import {
-  VisualEditing
-} from "next-sanity"
+import { VisualEditing } from "next-sanity/visual-editing"
 import { Inter } from "next/font/google"
 import { draftMode } from "next/headers"
 
