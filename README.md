@@ -1,4 +1,22 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/andrezimpel/next-sanity-unknown-foundation)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/andrezimpel/next-sanity-unknown-foundation&integration-ids=oac_hb2LITYajhRQ0i4QznmKH7gx&project-name=Next-Sanity-Foundation&repository-name=next-sanity-foundation&demo-description=A%20statically%20generated%20website%20example%20using%20Next.js%20and%20Sanity)
+
+> **🚀 Quick Deploy**: Click the button above to deploy this project to Vercel with Sanity integration automatically configured!
+
+### What happens during deployment:
+
+1. **Repository Cloning**: Vercel clones this repository to your GitHub account
+2. **Sanity Integration**: The Sanity integration is automatically enabled
+3. **Project Setup**: A new Vercel project is created with suggested settings
+4. **Environment Variables**: You'll be prompted to configure Sanity environment variables
+
+### Post-Deployment Steps:
+
+After deployment, you'll need to:
+
+1. **Configure Sanity Studio**: Visit your Sanity Studio at `https://your-project.vercel.app/studio`
+2. **Set up your Sanity project**: Create a new Sanity project or connect to an existing one
+3. **Configure environment variables**: Add your Sanity project ID, dataset, and API tokens
+4. **Create content**: Start creating pages, posts, and other content in Sanity Studio
 
 ## Setup Instructions
 
