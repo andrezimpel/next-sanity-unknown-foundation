@@ -1,3 +1,5 @@
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/andrezimpel/next-sanity-unknown-foundation)
+
 ## Setup Instructions
 
 ### Install Dependencies
