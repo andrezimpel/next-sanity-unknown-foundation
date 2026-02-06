@@ -39,6 +39,16 @@
 - Type generation: `npm run typegen` runs `sanity schema extract && sanity typegen generate` (outputs to `sanity.types.ts`)
 - Plugins: presentation tool, structure tool, vision, unsplash asset source, AI assist
 
+### Data Fetching & Type Safety
+- **Query Result Types**: All GROQ queries defined with `defineQuery` in `sanity/lib/queries.ts` automatically generate corresponding type exports in `sanity.types.ts` (e.g., `PostQueryResult`, `PageQueryResult`, `CaseStudyQueryResult`)
+- **Type Inference**: `sanityFetch` automatically infers return types from the query passed to it, providing type safety without explicit type annotations
+- **Component Props**: When creating components that receive Sanity data, extract types from the query result types using TypeScript utilities:
+  - Use `Pick<QueryResult, "field1" | "field2">` to select specific fields
+  - Use `Extract<UnionType, { _type: "specificType" }>` to narrow union types
+  - Use `NonNullable<QueryResult>["field"]` to unwrap optional fields
+  - Example: `type ImageProps = { image: NonNullable<PostQueryResult>["coverImage"] }`
+- **Pattern**: Fetch functions return the inferred type from `sanityFetch`, no explicit typing needed on the function signature itself
+
 ### Sanity Schemas: How We Write & Organize
 - **Location**: All schema files live in `sanity/schemas/`.
 - **Structure**:
@@ -102,7 +112,8 @@ Required env vars (configured via Vercel or `.env.local`):
 - **Webhook secret required**: Revalidation endpoint validates HMAC signatures; missing `SANITY_REVALIDATE_SECRET` causes 500 errors
 - **Draft tokens required**: Fetching draft content requires `SANITY_API_READ_TOKEN` (enforced in `sanity/lib/fetch.ts`)
 - **Typed queries only**: Use `defineQuery` from next-sanity for type-safe GROQ queries (pattern in `sanity/lib/queries.ts`)
-- **Sanity types only**: Always use generated types from `sanity.types.ts` (no ad-hoc interface shapes)
+- **Sanity types only**: Always use generated types from `sanity.types.ts` (no ad-hoc interface shapes); fetch functions rely on type inference from `sanityFetch`
+- **Query result types**: Component props receiving Sanity data must use `*QueryResult` types from `sanity.types.ts`, extracted with TypeScript utilities (Pick, Extract, NonNullable)
 - **Singletons enforce structure**: home-page and settings are singletons (configured via `singletonPlugin` in `sanity.config.ts`)
 - **CDN images only**: Image optimization restricted to `cdn.sanity.io` hostname (enforced in `next.config.ts`)
 - **Always fetch LQIP**: Frontend image queries must include the `lqip` field for low-quality image placeholders
