@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     await Promise.all(
       body.tags.map(async (tag) => {
         try {
-          await revalidateTag(tag)
+          await revalidateTag(tag, 'max')
           console.log(`Successfully revalidated tag: ${tag}`)
         } catch (error) {
           console.error(`Failed to revalidate tag: ${tag}`, error)

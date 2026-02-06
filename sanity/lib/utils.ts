@@ -1,4 +1,4 @@
-import createImageUrlBuilder from "@sanity/image-url"
+import { createImageUrlBuilder } from "@sanity/image-url"
 import { type PortableTextBlock } from "next-sanity"
 
 import { dataset, projectId } from "@/sanity/lib/api"

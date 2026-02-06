@@ -28,10 +28,22 @@ export async function sanityFetch<const QueryString extends string>({
   stega?: boolean
   tags?: string[]
 }) {
-  const perspective =
-    _perspective || (await draftMode()).isEnabled
-      ? "drafts"
-      : "published"
+  // Determine perspective - only check draftMode if no explicit perspective provided
+  // In Next.js 16, draftMode() can only be called during request time, not during build/static generation
+  let perspective: Omit<ClientPerspective, "raw"> = "published"
+  if (_perspective) {
+    perspective = _perspective
+  } else {
+    // Try to check draft mode, but gracefully fall back if called during build time
+    try {
+      const draft = await draftMode()
+      perspective = draft.isEnabled ? "drafts" : "published"
+    } catch (error) {
+      // draftMode() was called outside request scope (e.g., during build)
+      // Default to "published" perspective
+      perspective = "published"
+    }
+  }
   const stega =
     _stega ||
     perspective === "drafts" ||

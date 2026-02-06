@@ -9,11 +9,14 @@
  */
 
 import { cn } from "@/lib/utils"
+import { urlForImage } from "@/sanity/lib/utils"
+import Image from "next/image"
 import {
   PortableText,
   type PortableTextBlock,
   type PortableTextComponents,
 } from "next-sanity"
+import YouTube from "./portable-text/youtube"
 
 export default function CustomPortableText({
   className,
@@ -51,6 +54,34 @@ export default function CustomPortableText({
           </a>
         )
       },
+    },
+    types: {
+      image: ({ value }) => {
+        if (!value?.asset?._ref) {
+          return null
+        }
+        const imageUrl = urlForImage(value)?.url()
+        if (!imageUrl) {
+          return null
+        }
+        return (
+          <div className="my-6">
+            <Image
+              src={imageUrl}
+              alt={value.alt || ""}
+              width={800}
+              height={600}
+              className="rounded-lg w-full h-auto"
+            />
+            {value.caption && (
+              <p className="mt-2 text-sm text-muted-foreground text-center">
+                {value.caption}
+              </p>
+            )}
+          </div>
+        )
+      },
+      youTube: YouTube,
     },
   }
 

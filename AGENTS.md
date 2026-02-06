@@ -7,7 +7,7 @@
 - Optimized for Vercel deployment with Plausible Analytics integration
 
 ## Stack & Versions (source: package.json)
-- Next.js: `^16.1.6`
+- Next.js: `^16.1.6` (dev and build use Webpack via `--webpack` flag)
 - React: `^19.2.4`
 - React DOM: `^19.2.4`
 - TypeScript: `5.9.3`
@@ -16,6 +16,8 @@
 - Tailwind CSS: `^4.1.18`
 - @tailwindcss/postcss: `^4.1.18`
 - @tailwindcss/typography: `^0.5.19`
+
+**Status (Feb 2026):** Dependencies are current. Next.js 16 optimizations applied: Webpack used for dev/build (avoids Turbopack issues); revalidation uses `revalidateTag(tag, 'max')` per Next.js 16 API; Turbopack filesystem cache enabled in config for optional use.
 
 ## Architecture & Conventions
 
@@ -119,6 +121,6 @@ Required env vars (configured via Vercel or `.env.local`):
 - `/README.md` — Setup instructions, environment variables, deployment guide
 
 ## Ambiguities / TODOs
-- **Salt**: Not found as dependency in package.json or referenced in codebase. TODO: Verify if "Salt" refers to a design system, component library, or if it's not used in this project.
-- **Internationalization**: README describes i18n setup patterns (middleware, dictionaries, locale routing) but no evidence of implementation in current codebase. TODO: Check if i18n is planned or removed.
-- **Cache components**: Next.js 16 supports cache components, but no `"use cache"` directives found in codebase. TODO: Verify if cache components will be adopted or if traditional caching strategy (revalidation tags) is preferred.
+
+- **Cache components**: Next.js 16 supports cache components (`cacheComponents: true` in next.config), but not yet enabled; current strategy is tag-based revalidation. Can be adopted later if desired.
+- **Sanity typegen**: If `yarn build` fails with `isHttpError` from `@sanity/client`, remove `node_modules` and run `yarn install` again to resolve.
