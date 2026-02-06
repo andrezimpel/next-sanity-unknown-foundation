@@ -59,6 +59,16 @@
 - **Enable in Portable Text**: Add the new type to `sanity/schemas/block-styles.ts` with `defineArrayMember({ type: "<schemaName>" })` so editors can insert it.
 - **Portable Text component**: Create a renderer at `components/portable-text/<schemaName>.tsx` that outputs all schema fields as a starting point.
 - **GROQ fetch notes**: Include comments in the component describing how its data should be selected/dereferenced in GROQ queries.
+- **Props typing example**:
+  ```ts
+  interface HeroProps extends Pick<
+    Extract<
+      NonNullable<NonNullable<PageQueryResult>["content"]>[number],
+      { _type: "hero" }
+    >,
+    "headline" | "subline" | "link" | "coverImage"
+  > {}
+  ```
 
 ### Revalidation & Preview
 - Tag-based revalidation: `/app/api/revalidate/route.ts` validates webhook signatures and revalidates Next.js cache tags
@@ -87,8 +97,10 @@ Required env vars (configured via Vercel or `.env.local`):
 - **Webhook secret required**: Revalidation endpoint validates HMAC signatures; missing `SANITY_REVALIDATE_SECRET` causes 500 errors
 - **Draft tokens required**: Fetching draft content requires `SANITY_API_READ_TOKEN` (enforced in `sanity/lib/fetch.ts`)
 - **Typed queries only**: Use `defineQuery` from next-sanity for type-safe GROQ queries (pattern in `sanity/lib/queries.ts`)
+- **Sanity types only**: Always use generated types from `sanity.types.ts` (no ad-hoc interface shapes)
 - **Singletons enforce structure**: home-page and settings are singletons (configured via `singletonPlugin` in `sanity.config.ts`)
 - **CDN images only**: Image optimization restricted to `cdn.sanity.io` hostname (enforced in `next.config.ts`)
+- **Always fetch LQIP**: Frontend image queries must include the `lqip` field for low-quality image placeholders
 - **Static export**: Pages use `force-static` to ensure static generation at build time
 
 ## Source of Truth (Repo Files)
