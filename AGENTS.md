@@ -37,6 +37,29 @@
 - Type generation: `npm run typegen` runs `sanity schema extract && sanity typegen generate` (outputs to `sanity.types.ts`)
 - Plugins: presentation tool, structure tool, vision, unsplash asset source, AI assist
 
+### Sanity Schemas: How We Write & Organize
+- **Location**: All schema files live in `sanity/schemas/`.
+- **Structure**:
+  - `documents/` for regular content documents (e.g. `post`, `page`, `author`)
+  - `singletons/` for single-instance docs (e.g. `homePage`, `settings`)
+  - `objects/` for reusable object types (e.g. `youtube`)
+  - Shared helpers like `metafields.ts` and `block-styles.ts` live at the root
+- **Schema pattern**:
+  - Use `defineType` + `defineField` from `sanity`
+  - Keep validations in the field definition
+  - Add `preview` config where helpful
+  - Prefer shared helpers like `...metafields()` for SEO fields
+- **Registration**:
+  - Import schemas in `sanity.config.ts`
+  - Group into `singletons`, `documents`, `objects`, then spread into `schema.types`
+  - Add singletons to the `singletonPlugin` and `pageStructure` config
+
+### Sanity Schema Authoring & Portable Text Blocks
+- **Schema type decision**: Always ask if a new schema is a `document` or `object`; suggest based on the prompt (Portable Text blocks are usually `object`).
+- **Enable in Portable Text**: Add the new type to `sanity/schemas/block-styles.ts` with `defineArrayMember({ type: "<schemaName>" })` so editors can insert it.
+- **Portable Text component**: Create a renderer at `components/portable-text/<schemaName>.tsx` that outputs all schema fields as a starting point.
+- **GROQ fetch notes**: Include comments in the component describing how its data should be selected/dereferenced in GROQ queries.
+
 ### Revalidation & Preview
 - Tag-based revalidation: `/app/api/revalidate/route.ts` validates webhook signatures and revalidates Next.js cache tags
 - Draft mode: `/app/api/draft-mode/enable/route.ts` enables preview of unpublished content
