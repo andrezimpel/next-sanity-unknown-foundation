@@ -55,6 +55,9 @@
   - Import schemas in `sanity.config.ts`
   - Group into `singletons`, `documents`, `objects`, then spread into `schema.types`
   - Add singletons to the `singletonPlugin` and `pageStructure` config
+- **Required queries**: When creating a new document type with dynamic routes, add two queries to `sanity/lib/queries.ts`:
+  - `[resourceName]Query` - fetches full document data (e.g., `postQuery`, `pageQuery`)
+  - `[resourceName]PathsQuery` - generates static paths for `generateStaticParams` in `page.tsx` (e.g., `postPathsQuery`, `pagePathsQuery`)
 
 ### Sanity Schema Authoring & Portable Text Blocks
 - **Schema type decision**: Always ask if a new schema is a `document` or `object`; suggest based on the prompt (Portable Text blocks are usually `object`).
