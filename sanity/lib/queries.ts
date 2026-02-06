@@ -19,6 +19,15 @@ const authorFields = `
   "author": author->{"name": coalesce(name, "Anonymous"), picture, position}
 `
 
+// Keep this in sync with any new portable text components.
+const portableTextFields = `
+  ...,
+  _type == "image" => {
+    ...,
+    "lqip": asset->metadata.lqip
+  }
+`
+
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
 
 export const navigationZoneQuery = defineQuery(`
@@ -68,7 +77,9 @@ export const postQuery = defineQuery(`
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
     excerpt,
-    content,
+    content[] {
+      ${portableTextFields}
+    },
     ${coverImageFields},
     "date": coalesce(date, _updatedAt),
     ${authorFields},
@@ -104,7 +115,9 @@ export const pageQuery = defineQuery(`
     _updatedAt,
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
-    content,
+    content[] {
+      ${portableTextFields}
+    },
     ${coverImageFields},
     ${metafields}
   }
