@@ -14,7 +14,7 @@ import {
 import { structureTool } from "sanity/structure"
 
 import { apiVersion, dataset, projectId, studioUrl } from "@/sanity/lib/api"
-import { resolveHref } from "@/sanity/lib/utils"
+import { resolvePathname } from "@/sanity/lib/utils"
 import { assistWithPresets } from "@/sanity/plugins/assist"
 import { pageStructure, singletonPlugin } from "@/sanity/plugins/settings"
 import author from "@/sanity/schemas/documents/author"
@@ -72,7 +72,7 @@ export default defineConfig({
               locations: [
                 {
                   title: doc?.title || "Untitled",
-                  href: resolveHref("post", doc?.slug)!,
+                  href: resolvePathname("post", doc?.slug)!,
                 },
                 homeLocation,
               ],

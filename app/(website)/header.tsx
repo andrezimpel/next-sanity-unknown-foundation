@@ -1,6 +1,6 @@
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { navigationZoneQuery, settingsQuery } from "@/sanity/lib/queries"
-import { resolveHref } from "@/sanity/lib/utils"
+import { resolvePathname } from "@/sanity/lib/utils"
 import Link from "next/link"
 
 export async function Header() {
@@ -29,7 +29,7 @@ export async function Header() {
           {navigationZone?.items?.map((item, index) => (
             <li key={item?._key || index}>
               <Link
-                href={item?.url || resolveHref(item?.link?._type, item?.link?.slug) || ""}
+                href={item?.url || resolvePathname(item?.link?._type, item?.link?.slug) || ""}
                 className="px-2 py-1"
                 target={item?.url && !item?.url.startsWith(process.env.SITE_URL || "") ? "_blank" : "_self"}
               >

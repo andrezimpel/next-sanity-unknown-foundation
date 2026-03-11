@@ -1,6 +1,6 @@
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { pagePathsQuery, postPathsQuery } from '@/sanity/lib/queries'
-import { resolveHref } from '@/sanity/lib/utils'
+import { resolveUrl } from '@/sanity/lib/utils'
 import type { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const pageObjects = pages.filter((page) => !page.noIndex).map((page) => {
     return {
-      url: `${process.env.SITE_URL}${resolveHref("page", page.slug!)}`,
+      url: resolveUrl("page", page.slug!) as string,
       lastModified: page._updatedAt,
       changeFrequency: 'monthly',
       priority: 0.5,
@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const postObjects = posts.filter((post) => !post.noIndex).map((post) => {
     return {
-      url: `${process.env.SITE_URL}${resolveHref("post", post.slug!)}`,
+      url: resolveUrl("post", post.slug!) as string,
       lastModified: post._updatedAt,
       changeFrequency: 'weekly',
       priority: 0.8,
@@ -38,6 +38,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })
 
   return [
+    {
+      url: `${process.env.SITE_URL}/`,
+      changeFrequency: 'monthly',
+      priority: 1.0,
+    },
     ...pageObjects,
     ...postObjects,
   ] as MetadataRoute.Sitemap

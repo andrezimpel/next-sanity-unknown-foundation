@@ -3,7 +3,7 @@ import PortableText from "@/components/portable-text"
 import { PostGrid } from "@/components/post-grid"
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { pageQuery, postsQuery } from "@/sanity/lib/queries"
-import { resolveHref, resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { resolveOpenGraphImage, resolveUrl } from "@/sanity/lib/utils"
 import { Metadata } from "next"
 import { PortableTextBlock } from "next-sanity"
 import { notFound } from "next/navigation"
@@ -50,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
       index: !page?.noIndex
     },
     alternates: {
-      canonical: resolveHref("page", "posts"),
+      canonical: resolveUrl("page", "posts"),
     }
   }
 }
@@ -79,7 +79,7 @@ export default async function PostsPage() {
         ...(openGraphImage && {
           image: openGraphImage?.url
         }),
-        url: resolveHref("page", "posts", true),
+        url: resolveUrl("page", "posts"),
         ...(page?.metaDescription && { description: page.metaDescription }),
         ...(page?._updatedAt && { dateModified: page._updatedAt })
       } as WithContext<WebPage>} />

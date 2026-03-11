@@ -2,7 +2,7 @@ import { JsonLd } from "@/components/jsonld"
 import PortableText from "@/components/portable-text"
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { pagePathsQuery, pageQuery } from "@/sanity/lib/queries"
-import { resolveHref, resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { resolveOpenGraphImage, resolveUrl } from "@/sanity/lib/utils"
 import { Metadata } from 'next'
 import { PortableTextBlock } from "next-sanity"
 import { notFound } from "next/navigation"
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       index: !page?.noIndex
     },
     alternates: {
-      canonical: resolveHref("page", resolvedParams?.slug, true),
+      canonical: resolveUrl("page", resolvedParams?.slug),
     }
   }
 }
@@ -77,7 +77,7 @@ export default async function Page({ params }: Props) {
         ...(openGraphImage && {
           image: openGraphImage?.url
         }),
-        url: resolveHref("page", resolvedParams?.slug),
+        url: resolveUrl("page", resolvedParams?.slug),
         ...(page?.metaDescription && { description: page.metaDescription }),
         ...(page?._updatedAt && { dateModified: page._updatedAt }),
       } as WithContext<WebPage>} />

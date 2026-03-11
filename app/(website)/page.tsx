@@ -41,7 +41,7 @@ export async function generateMetadata(): Promise<Metadata> {
       index: !homePage?.noIndex
     },
     alternates: {
-      canonical: "/"
+      canonical: `${process.env.SITE_URL}/`
     }
   }
 }

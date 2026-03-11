@@ -26,6 +26,7 @@ export function PostGrid({ posts }: { posts: PostsQueryResult }) {
                 alt={post.coverImage.alt || ""}
                 src={urlForImage(post.coverImage)?.height(height).width(width).url() as string}
                 blurDataURL={post.coverImage.lqip || ""}
+                placeholder="blur"
               />
             ) : (
               <div className="bg-slate-50" style={{ paddingTop: "50%" }} />

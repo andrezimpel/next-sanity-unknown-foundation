@@ -3,7 +3,7 @@ import { JsonLd } from "@/components/jsonld"
 import PortableText from "@/components/portable-text"
 import { sanityFetch } from "@/sanity/lib/fetch"
 import { postPathsQuery, postQuery } from "@/sanity/lib/queries"
-import { resolveHref, resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { resolveOpenGraphImage, resolveUrl } from "@/sanity/lib/utils"
 import { Metadata } from "next"
 import { toPlainText, type PortableTextBlock } from "next-sanity"
 import { notFound } from "next/navigation"
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       index: !post?.noIndex
     },
     alternates: {
-      canonical: resolveHref("post", resolvedParams?.slug),
+      canonical: resolveUrl("post", resolvedParams?.slug),
     }
   }
 }
@@ -109,7 +109,7 @@ export default async function PostPage({ params }: Props) {
         articleBody: toPlainText(post.content as PortableTextBlock[]),
         ...(post.date && { datePublished: post.date }),
         ...(post?._updatedAt && { dateModified: post._updatedAt }),
-        url: resolveHref("post", resolvedParams?.slug, true),
+        url: resolveUrl("post", resolvedParams?.slug),
         ...(post?.metaDescription && { description: post.metaDescription }),
         ...((post?.author && post.author.name) && {
           author: {

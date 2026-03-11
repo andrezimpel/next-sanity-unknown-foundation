@@ -47,7 +47,7 @@ const allFields = {
         description: "Text for screen readers and SEO.",
         validation: (rule) => {
           return rule.custom((alt, context) => {
-            if ((context.document?.coverImage as any)?.asset?._ref && !alt) {
+            if ((context.document?.ogImage as any)?.asset?._ref && !alt) {
               return "Required"
             }
             return true

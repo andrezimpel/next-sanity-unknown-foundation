@@ -24,26 +24,38 @@ export function resolveOpenGraphImage(image: any, width = 1200, height = 627) {
   return { url, alt: image?.alt as string, width, height }
 }
 
-export function resolveHref(
+/**
+ * Returns a root-relative pathname for a document, e.g. "/posts/my-slug".
+ * Use for internal <Link href>, <a href>, and robots.txt entries.
+ */
+export function resolvePathname(
   documentType?: string,
   slug?: string | null,
-  absolute?: boolean
 ): string | undefined {
-  if (!slug) {
-    return undefined // Return undefined if slug is not provided or is null
-  }
-
-  const baseUrl = absolute ? process.env.SITE_URL! : ""
+  if (!slug) return undefined
 
   switch (documentType) {
     case "page":
-      return `${baseUrl}/${slug}`
+      return `/${slug}`
     case "post":
-      return `${baseUrl}/posts/${slug}`
+      return `/posts/${slug}`
     default:
       console.warn("Invalid document type:", documentType)
       return undefined
   }
+}
+
+/**
+ * Returns an absolute URL for a document, e.g. "https://example.com/posts/my-slug".
+ * Use for canonical tags, JSON-LD, sitemap entries, and OG metadata.
+ */
+export function resolveUrl(
+  documentType?: string,
+  slug?: string | null,
+): string | undefined {
+  const pathname = resolvePathname(documentType, slug)
+  if (!pathname) return undefined
+  return `${process.env.SITE_URL}${pathname}`
 }
 
 export function toPlainText(blocks: PortableTextBlock[] = []) {

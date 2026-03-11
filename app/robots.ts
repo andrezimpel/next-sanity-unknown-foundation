@@ -1,6 +1,6 @@
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { pagePathsQuery, postPathsQuery } from '@/sanity/lib/queries'
-import { resolveHref } from '@/sanity/lib/utils'
+import { resolvePathname } from '@/sanity/lib/utils'
 import type { MetadataRoute } from 'next'
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
@@ -17,23 +17,24 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
     }),
   ])
 
-  const disallow = [
-    ...pages.filter(page => page.noIndex).map(page => resolveHref("page", page.slug!)),
-    ...posts.filter(post => post.noIndex).map(post => resolveHref("post", post.slug!)),
-    // Next.js crawl budget performance rules
-    "/_next/*.json$",
-    "/_next/*_buildManifest.js$",
-    "/_next/*_middlewareManifest.js$",
-    "/_next/*_ssgManifest.js$",
-    "/_next/*.js$",
-  ]
+  const noIndexPaths = [
+    ...pages.filter(page => page.noIndex).map(page => resolvePathname("page", page.slug!)),
+    ...posts.filter(post => post.noIndex).map(post => resolvePathname("post", post.slug!)),
+  ].filter(Boolean) as string[]
 
   return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: disallow
-    },
+    rules: [
+      {
+        // Google, Bing, and all standard search engine crawlers.
+        // Do NOT block /_next/static/ or /_next/image/ — Google needs JS, CSS,
+        // and optimized images to render pages. Blocking them causes Google to
+        // see unstyled HTML and significantly reduces indexing.
+        // Source: https://developers.google.com/search/docs/crawling-indexing/robots/intro
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/studio', '/api/', ...noIndexPaths],
+      },
+    ],
     sitemap: `${process.env.SITE_URL}/sitemap.xml`,
-  } as MetadataRoute.Robots
+  }
 }
