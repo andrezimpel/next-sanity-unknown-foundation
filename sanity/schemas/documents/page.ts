@@ -3,6 +3,7 @@ import { defineField, defineType } from "sanity"
 
 import blockStyles from "../block-styles"
 import metafields from "../metafields"
+import { slugFields } from "../slug-fields"
 
 /**
  * This file is the schema definition for a page.
@@ -29,18 +30,7 @@ export default defineType({
       description: "The title of the page.",
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: "slug",
-      title: "Slug",
-      type: "slug",
-      description: "A unique identifier for the page, used in URLs.",
-      options: {
-        source: "title",
-        maxLength: 96,
-        isUnique: (value, context) => context.defaultIsUnique(value, context),
-      },
-      validation: (rule) => rule.required(),
-    }),
+    ...slugFields("page"),
     defineField({
       name: "content",
       title: "Content",
@@ -55,9 +45,6 @@ export default defineType({
       description: "The main image for the page.",
       options: {
         hotspot: true,
-        aiAssist: {
-          imageDescriptionField: "alt",
-        },
       },
       fields: [
         {

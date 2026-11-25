@@ -1,79 +1,33 @@
-import { sanityFetch } from '@/sanity/lib/fetch'
-import { postPathsQuery, postQuery } from '@/sanity/lib/queries'
-import { resolveOpenGraphImage } from '@/sanity/lib/utils'
-import { ImageResponse } from 'next/og'
+import { renderSocialImage, socialImageSize } from "@/components/social-image"
+import { sanityFetch } from "@/sanity/lib/fetch"
+import { contentTags } from "@/sanity/lib/tags"
+import { postPathsQuery, postQuery } from "@/sanity/lib/queries"
+import { isRoutableSlug } from "@/sanity/lib/routes"
+import { resolveOpenGraphImage } from "@/sanity/lib/utils"
 
-export const alt = 'Post'
-export const size = {
-  width: 1200,
-  height: 630,
-}
-
-export const contentType = 'image/png'
+export const alt = "Post"
+export const size = socialImageSize
+export const contentType = "image/png"
 
 export async function generateStaticParams() {
-  return await sanityFetch({
-    query: postPathsQuery,
-    perspective: "published",
-    stega: false,
-    tags: ["post"]
-  })
+  const paths = await sanityFetch({ query: postPathsQuery, mode: "published", tags: ["post"] })
+  return paths.flatMap(({ slug }) =>
+    isRoutableSlug("post", slug) ? [{ slug }] : [],
+  )
 }
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = await params
-
-  const content = await sanityFetch({
+  const { slug } = await params
+  if (!isRoutableSlug("post", slug)) return new Response(null, { status: 404 })
+  const document = await sanityFetch({
     query: postQuery,
-    params: resolvedParams,
-    tags: ["post"],
-    perspective: "published"
+    params: { slug },
+    tags: contentTags.post,
+    mode: "published",
   })
-
-  const ogImage = resolveOpenGraphImage(content?.ogImage || content?.coverImage)
-
-  if (ogImage?.url) {
-    return new ImageResponse(
-      (
-        <div
-          style={{
-            fontSize: 128,
-            background: 'white',
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={ogImage.url} alt={content?.title || ''} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        </div>
-      ),
-      {
-        ...size,
-      }
-    )
-  }
-
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          fontSize: 128,
-          background: 'white',
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {content?.title || "Untitled"}
-      </div>
-    ),
-    {
-      ...size,
-    }
+  if (!document) return new Response(null, { status: 404 })
+  return renderSocialImage(
+    document.ogTitle || document.title,
+    resolveOpenGraphImage(document.ogImage || document.coverImage)?.url,
   )
 }

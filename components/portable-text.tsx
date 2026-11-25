@@ -10,12 +10,14 @@
 
 import { cn } from "@/lib/utils"
 import { urlForImage } from "@/sanity/lib/utils"
+import { resolvePathname } from "@/sanity/lib/routes"
 import Image from "next/image"
 import {
   PortableText,
-  type PortableTextBlock,
+  stegaClean,
   type PortableTextComponents,
 } from "next-sanity"
+import type { PageQueryResult } from "@/sanity.types"
 import YouTube from "./portable-text/youtube"
 
 export default function CustomPortableText({
@@ -23,8 +25,9 @@ export default function CustomPortableText({
   value,
 }: {
   className?: string
-  value: PortableTextBlock[]
+  value: NonNullable<PageQueryResult>["content"]
 }) {
+  if (!value?.length) return null
   const components: PortableTextComponents = {
     block: {
       h2: ({ children }) => (
@@ -47,9 +50,13 @@ export default function CustomPortableText({
       ),
     },
     marks: {
+      internalLink: ({ children, value }) => {
+        const href = resolvePathname(value?.target?._type, stegaClean(value?.target?.slug))
+        return href ? <a href={href}>{children}</a> : <>{children}</>
+      },
       link: ({ children, value }) => {
         return (
-          <a href={value?.href} rel="noreferrer noopener">
+          <a href={stegaClean(value?.href)} rel="noreferrer noopener">
             {children}
           </a>
         )
@@ -57,20 +64,25 @@ export default function CustomPortableText({
     },
     types: {
       image: ({ value }) => {
-        if (!value?.asset?._ref) {
-          return null
-        }
+        const dimensions = /^image-[^-]+-(\d+)x(\d+)-[a-z\d]+$/i.exec(value?.asset?._ref ?? "")
+        if (!dimensions) return null
         const imageUrl = urlForImage(value)?.url()
-        if (!imageUrl) {
-          return null
-        }
+        if (!imageUrl) return null
+        // The Sanity builder includes the final pixel rectangle for an editorial crop.
+        const crop = new URL(imageUrl).searchParams.get("rect")?.split(",")
+        const width = Number(crop?.[2] ?? dimensions[1])
+        const height = Number(crop?.[3] ?? dimensions[2])
+        if (!(width > 0 && height > 0)) return null
         return (
           <div className="my-6">
             <Image
               src={imageUrl}
-              alt={value.alt || ""}
-              width={800}
-              height={600}
+              alt={stegaClean(value.alt) || ""}
+              width={width}
+              height={height}
+              sizes="100vw"
+              blurDataURL={value.lqip || undefined}
+              placeholder={value.lqip ? "blur" : "empty"}
               className="rounded-lg w-full h-auto"
             />
             {value.caption && (

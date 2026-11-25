@@ -1,9 +1,12 @@
+import { stegaClean } from "next-sanity"
+
 export function JsonLd<T>({ jsonLd }: { jsonLd: T }) {
   return (
     <script
-      className="hidden sr-only"
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(stegaClean(jsonLd)).replace(/</g, "\\u003c"),
+      }}
     />
   )
 }

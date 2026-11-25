@@ -1,3 +1,5 @@
+import { stegaClean } from "next-sanity"
+
 interface YouTubeProps {
   value: {
     url: string
@@ -5,7 +7,7 @@ interface YouTubeProps {
 }
 
 export default function YouTube({ value }: YouTubeProps) {
-  const { url } = value
+  const url = stegaClean(value.url)
   
   if (!url) {
     return null
@@ -26,7 +28,8 @@ export default function YouTube({ value }: YouTubeProps) {
         <iframe
           className="absolute top-0 left-0 w-full h-full rounded-lg"
           src={embedUrl}
-          frameBorder="0"
+          title="YouTube video"
+          loading="lazy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />

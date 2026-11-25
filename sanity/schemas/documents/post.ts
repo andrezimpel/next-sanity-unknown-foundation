@@ -4,6 +4,7 @@ import { defineField, defineType } from "sanity"
 
 import blockStyles from "../block-styles"
 import metafields from "../metafields"
+import { slugFields } from "../slug-fields"
 import authorType from "./author"
 
 /**
@@ -31,18 +32,7 @@ export default defineType({
       description: "The title of the post.",
       validation: (rule) => rule.required(),
     }),
-    defineField({
-      name: "slug",
-      title: "Slug",
-      type: "slug",
-      description: "A unique identifier for the post, used in URLs.",
-      options: {
-        source: "title",
-        maxLength: 96,
-        isUnique: (value, context) => context.defaultIsUnique(value, context),
-      },
-      validation: (rule) => rule.required(),
-    }),
+    ...slugFields("post"),
     defineField({
       name: "content",
       title: "Content",
@@ -63,9 +53,6 @@ export default defineType({
       description: "The main image for the post.",
       options: {
         hotspot: true,
-        aiAssist: {
-          imageDescriptionField: "alt",
-        },
       },
       fields: [
         {

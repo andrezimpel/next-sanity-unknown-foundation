@@ -16,26 +16,37 @@ const coverImageFields = `
 `
 
 const authorFields = `
-  "author": author->{"name": coalesce(name, "Anonymous"), picture, position}
+  "author": author->{"name": coalesce(name, "Anonymous"), picture, position, profileUrl}
 `
 
 // Keep this in sync with any new portable text components.
 const portableTextFields = `
   ...,
+  _type == "block" => {
+    markDefs[] {
+      ...,
+      _type == "internalLink" => { "target": target->{_type, "slug": slug.current} }
+    }
+  },
   _type == "image" => {
     ...,
     "lqip": asset->metadata.lqip
   }
 `
 
-export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
+export const settingsQuery = defineQuery(`
+  coalesce(*[_type == "settings" && _id == "settings"][0],
+    select(count(*[_type == "settings"]) == 1 => *[_type == "settings"][0]))
+`)
 
 export const navigationZoneQuery = defineQuery(`
   *[_type == "navigationZone" && identifier == $identifier][0] {
     items[] {
-      ...,
+      _key,
+      title,
+      url,
       link->{
-        ...,
+        _type,
         title,
         "slug": slug.current,
       }
@@ -43,8 +54,12 @@ export const navigationZoneQuery = defineQuery(`
   }
 `)
 
-export const homePageQuery = defineQuery(`*[_type == "homePage"][0] {
-  ...,
+export const homePageQuery = defineQuery(`
+  coalesce(*[_type == "homePage" && _id == "homePage"][0],
+    select(count(*[_type == "homePage"]) == 1 => *[_type == "homePage"][0])) {
+  _updatedAt,
+  title,
+  content[] { ${portableTextFields} },
   ${metafields}
 }`)
 
@@ -59,14 +74,12 @@ export const postPathsQuery = defineQuery(`
 
 // posts
 export const postsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {
+  *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc, _id asc) [$from...$to] {
     _id,
     "title": coalesce(title, "Untitled"),
     "slug": slug.current,
     excerpt,
-    ${coverImageFields},
-    "date": coalesce(date, _updatedAt),
-    ${authorFields}
+    ${coverImageFields}
   }
 `)
 
@@ -81,21 +94,9 @@ export const postQuery = defineQuery(`
       ${portableTextFields}
     },
     ${coverImageFields},
-    "date": coalesce(date, _updatedAt),
+    date,
     ${authorFields},
     ${metafields}
-  }
-`)
-
-export const moreStoriesQuery = defineQuery(`
-  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
-    _id,
-    "title": coalesce(title, "Untitled"),
-    "slug": slug.current,
-    excerpt,
-    ${coverImageFields},
-    "date": coalesce(date, _updatedAt),
-    ${authorFields}
   }
 `)
 
@@ -122,3 +123,14 @@ export const pageQuery = defineQuery(`
     ${metafields}
   }
 `)
+
+const documentsWithAliases = `_type in ["page", "post"] && defined(slug.current) && count(previousSlugs) > 0`
+
+export const redirectsQuery = defineQuery(`{
+  "aliases": *[${documentsWithAliases}] | order(_id asc) {
+    _type, "slug": slug.current, previousSlugs
+  },
+  "occupied": *[_type in ["page", "post"] && slug.current in *[${documentsWithAliases}].previousSlugs[]] {
+    _type, "slug": slug.current
+  }
+}`)

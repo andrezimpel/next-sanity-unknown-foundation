@@ -1,72 +1,71 @@
+import type { Metadata } from "next"
+import { notFound } from "next/navigation"
+import type { WebPage, WebSite, WithContext } from "schema-dts"
+
 import { JsonLd } from "@/components/jsonld"
+import PortableText from "@/components/portable-text"
+import { siteUrl } from "@/lib/site-url"
 import { sanityFetch } from "@/sanity/lib/fetch"
-import { homePageQuery, settingsQuery } from "@/sanity/lib/queries"
+import { contentTags } from "@/sanity/lib/tags"
+import { homePageQuery } from "@/sanity/lib/queries"
 import { resolveOpenGraphImage } from "@/sanity/lib/utils"
-import { Metadata } from 'next'
-import { WebPage, WithContext } from "schema-dts"
+import { contentMetadata, fetchPlainSettings } from "./metadata"
 
-// Add this to make the page static
-export const dynamic = 'force-static'
-
-const fetchHomePage = async (stega: boolean = true) => {
-  return await Promise.all([
-    sanityFetch({
-      query: homePageQuery,
-      stega,
-      tags: ["homePage"]
-    }),
-    sanityFetch({
-      query: settingsQuery,
-      stega,
-      tags: ["settings"]
-    }),
-  ])
+function fetchHomePage(mode: "preview-plain" | "preview-text") {
+  return sanityFetch({ query: homePageQuery, mode, tags: contentTags.homePage })
 }
 
-// Function to generate metadata
 export async function generateMetadata(): Promise<Metadata> {
-  const [homePage, settings] = await fetchHomePage(false)
+  const [home, settings] = await Promise.all([fetchHomePage("preview-plain"), fetchPlainSettings()])
+  if (!home) notFound()
 
-  const ogImage = resolveOpenGraphImage(homePage?.ogImage)
-  const title = `${homePage?.title} | ${settings?.title}`
+  const title = home.title || settings?.title || "Home"
+  const metadata = await contentMetadata({
+    title,
+    description: home.metaDescription,
+    socialTitle: home.ogTitle,
+    image: resolveOpenGraphImage(home.ogImage),
+    pathname: "/",
+    noIndex: home.noIndex,
+  })
 
   return {
-    title,
-    ...(homePage?.metaDescription && { description: homePage.metaDescription }),
-    openGraph: {
-      ...(homePage?.ogTitle && { title: homePage.ogTitle }),
-      ...(ogImage && { images: [ogImage] }),
-    },
-    robots: {
-      index: !homePage?.noIndex
-    },
-    alternates: {
-      canonical: `${process.env.SITE_URL}/`
-    }
+    ...metadata,
+    title: { absolute: settings?.title && settings.title !== title ? `${title} | ${settings.title}` : title },
   }
 }
 
 export default async function HomePage() {
-  const [page] = await fetchHomePage(true)
+  const [page, settings] = await Promise.all([fetchHomePage("preview-text"), fetchPlainSettings()])
+  if (!page) notFound()
 
-  const openGraphImage = resolveOpenGraphImage(page?.ogImage)
+  const image = resolveOpenGraphImage(page.ogImage)
+  const url = siteUrl("/")
+  const name = settings?.title?.trim()
+  const website: WithContext<WebSite> | undefined = name ? {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name,
+    url,
+  } : undefined
+  const jsonLd: WithContext<WebPage> = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: page.title ?? undefined,
+    image: image?.url,
+    url,
+    description: page.metaDescription ?? undefined,
+    dateModified: page._updatedAt,
+  }
 
   return (
     <>
-      <div className="container mx-auto">
-        <h1>{page?.title}</h1>
+      <div className="container mx-auto space-y-6">
+        <h1 className="text-4xl font-bold">{page.title}</h1>
+        <PortableText value={page.content} />
       </div>
-      <JsonLd jsonLd={{
-        '@context': 'https://schema.org',
-        '@type': 'WebPage',
-        name: page?.title,
-        ...(openGraphImage && {
-          image: openGraphImage?.url
-        }),
-        url: `${process.env.SITE_URL!}/`,
-        ...(page?.metaDescription && { description: page.metaDescription }),
-        ...(page?._updatedAt && { dateModified: page._updatedAt })
-      } as WithContext<WebPage>} />
+      <JsonLd jsonLd={jsonLd} />
+      {website && <JsonLd jsonLd={website} />}
     </>
   )
 }

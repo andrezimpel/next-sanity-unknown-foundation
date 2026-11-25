@@ -9,7 +9,7 @@ export default async function MoreStories(params: {
   from: number
   to: number
 }) {
-  const posts = await sanityFetch({ query: postsQuery, params, tags: ["post", "author"] })
+  const posts = await sanityFetch({ query: postsQuery, params, tags: ["post"] })
 
   return (
     <PostGrid posts={posts} />

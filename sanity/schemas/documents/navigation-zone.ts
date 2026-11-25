@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { navigationConflictQuery, studioValidationApiVersion } from "@/sanity/lib/studio-queries"
 
 export default defineType({
   name: 'navigationZone',
@@ -23,7 +24,15 @@ export default defineType({
       title: 'Identifier',
       type: 'string',
       description: 'Unique identifier for this navigation zone',
-      validation: (Rule) => Rule.required(),
+      validation: (rule) => rule.required().custom(async (identifier, context) => {
+        if (!identifier) return true
+        const id = context.document?._id.replace(/^(?:drafts\.|versions\.[^.]+\.)/, "") ?? ""
+        const conflict = await context.getClient({ apiVersion: studioValidationApiVersion }).fetch(navigationConflictQuery, {
+          id,
+          identifier,
+        }, { perspective: "raw", useCdn: false })
+        return conflict ? "A navigation zone already uses this identifier." : true
+      }),
     }),
     defineField({
       name: 'items',

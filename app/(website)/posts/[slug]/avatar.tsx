@@ -1,36 +1,30 @@
-import { Image } from "next-sanity/image"
+import Image from "next/image"
+import { stegaClean } from "next-sanity"
 
-import type { Author } from "@/sanity.types"
+import type { PostQueryResult } from "@/sanity.types"
 import { urlForImage } from "@/sanity/lib/utils"
 
-interface Props {
-  name: string
-  picture: Exclude<Author["picture"], undefined> | null
-}
+type Author = NonNullable<NonNullable<PostQueryResult>["author"]>
 
-export default function Avatar({ name, picture }: Props) {
+export default function Avatar({ author }: { author: Author }) {
+  const image = urlForImage(author.picture)?.height(96).width(96).fit("crop").url()
+  const profileUrl = stegaClean(author.profileUrl)
+  const hasProfile = profileUrl && /^https?:\/\//i.test(profileUrl)
+
   return (
-    <div className="flex items-center text-xl">
-      {picture?.asset?._ref ? (
-        <div className="mr-4 h-12 w-12">
-          <Image
-            alt={picture?.alt || ""}
-            className="h-full rounded-full object-cover"
-            height={48}
-            width={48}
-            src={
-              urlForImage(picture)
-                ?.height(96)
-                .width(96)
-                .fit("crop")
-                .url() as string
-            }
-          />
-        </div>
-      ) : (
-        <div className="mr-1">By </div>
-      )}
-      <div className="text-pretty text-xl font-bold">{name}</div>
+    <div className="flex items-center gap-2 text-xl">
+      {image ? (
+        <Image
+          alt={stegaClean(author.picture?.alt) || ""}
+          className="rounded-full object-cover"
+          height={48}
+          width={48}
+          src={image}
+        />
+      ) : "By"}
+      {hasProfile ? (
+        <a className="font-bold underline" href={profileUrl}>{author.name}</a>
+      ) : <span className="font-bold">{author.name}</span>}
     </div>
   )
 }

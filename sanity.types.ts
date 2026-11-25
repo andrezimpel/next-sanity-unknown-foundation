@@ -12,6 +12,8 @@
  * ---------------------------------------------------------------------------------
  */
 
+export declare const internalGroqTypeReferenceTo: unique symbol;
+
 // Source: schema.json
 export type SanityImageAssetReference = {
   _ref: string;
@@ -22,7 +24,7 @@ export type SanityImageAssetReference = {
 
 export type OgImage = {
   asset?: SanityImageAssetReference;
-  media?: unknown; // Unable to locate the referenced type "media" in schema
+  media?: unknown; // Unable to locate the referenced type "ogImage.media" in schema
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   alt?: string;
@@ -64,6 +66,156 @@ export type NavigationZone = {
   }>;
 };
 
+export type Settings = {
+  _id: string;
+  _type: "settings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  locale?: string;
+  ogImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type HomePage = {
+  _id: string;
+  _type: "homePage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  content?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote" | "tip";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<
+          | {
+              href?: string;
+              _type: "link";
+              _key: string;
+            }
+          | {
+              target?: PageReference | PostReference;
+              _type: "internalLink";
+              _key: string;
+            }
+        >;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        caption?: string;
+        _type: "image";
+        _key: string;
+      }
+    | ({
+        _key: string;
+      } & YouTube)
+  >;
+  metaDescription?: string;
+  ogTitle?: string;
+  ogImage?: OgImage;
+  noIndex?: boolean;
+};
+
+export type Page = {
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  previousSlugs?: Array<string>;
+  content?: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote" | "tip";
+        listItem?: "bullet" | "number";
+        markDefs?: Array<
+          | {
+              href?: string;
+              _type: "link";
+              _key: string;
+            }
+          | {
+              target?: PageReference | PostReference;
+              _type: "internalLink";
+              _key: string;
+            }
+        >;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        caption?: string;
+        _type: "image";
+        _key: string;
+      }
+    | ({
+        _key: string;
+      } & YouTube)
+  >;
+  coverImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  metaDescription?: string;
+  ogTitle?: string;
+  ogImage?: OgImage;
+  noIndex?: boolean;
+};
+
 export type AuthorReference = {
   _ref: string;
   _type: "reference";
@@ -79,6 +231,7 @@ export type Post = {
   _rev: string;
   title?: string;
   slug?: Slug;
+  previousSlugs?: Array<string>;
   content?: Array<
     | {
         children?: Array<{
@@ -89,11 +242,18 @@ export type Post = {
         }>;
         style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote" | "tip";
         listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
+        markDefs?: Array<
+          | {
+              href?: string;
+              _type: "link";
+              _key: string;
+            }
+          | {
+              target?: PageReference | PostReference;
+              _type: "internalLink";
+              _key: string;
+            }
+        >;
         level?: number;
         _type: "block";
         _key: string;
@@ -103,6 +263,8 @@ export type Post = {
         media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
+        alt?: string;
+        caption?: string;
         _type: "image";
         _key: string;
       }
@@ -135,6 +297,7 @@ export type Author = {
   _rev: string;
   name?: string;
   position?: string;
+  profileUrl?: string;
   picture?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -145,246 +308,10 @@ export type Author = {
   };
 };
 
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
 export type Slug = {
   _type: "slug";
   current?: string;
   source?: string;
-};
-
-export type Page = {
-  _id: string;
-  _type: "page";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  slug?: Slug;
-  content?: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?: "normal" | "h2" | "h3" | "h4" | "h5" | "blockquote" | "tip";
-        listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }
-    | {
-        asset?: SanityImageAssetReference;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        _type: "image";
-        _key: string;
-      }
-    | ({
-        _key: string;
-      } & YouTube)
-  >;
-  coverImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  metaDescription?: string;
-  ogTitle?: string;
-  ogImage?: OgImage;
-  noIndex?: boolean;
-};
-
-export type Settings = {
-  _id: string;
-  _type: "settings";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  description?: string;
-  ogImage?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
-  };
-};
-
-export type HomePage = {
-  _id: string;
-  _type: "homePage";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  metaDescription?: string;
-  ogTitle?: string;
-  ogImage?: OgImage;
-  noIndex?: boolean;
-};
-
-export type SanityAssistInstructionTask = {
-  _type: "sanity.assist.instructionTask";
-  path?: string;
-  instructionKey?: string;
-  started?: string;
-  updated?: string;
-  info?: string;
-};
-
-export type SanityAssistTaskStatus = {
-  _type: "sanity.assist.task.status";
-  tasks?: Array<
-    {
-      _key: string;
-    } & SanityAssistInstructionTask
-  >;
-};
-
-export type SanityAssistSchemaTypeAnnotations = {
-  _type: "sanity.assist.schemaType.annotations";
-  title?: string;
-  fields?: Array<
-    {
-      _key: string;
-    } & SanityAssistSchemaTypeField
-  >;
-};
-
-export type SanityAssistOutputType = {
-  _type: "sanity.assist.output.type";
-  type?: string;
-};
-
-export type SanityAssistOutputField = {
-  _type: "sanity.assist.output.field";
-  path?: string;
-};
-
-export type AssistInstructionContextReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "assist.instruction.context";
-};
-
-export type SanityAssistInstructionContext = {
-  _type: "sanity.assist.instruction.context";
-  reference?: AssistInstructionContextReference;
-};
-
-export type AssistInstructionContext = {
-  _id: string;
-  _type: "assist.instruction.context";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  context?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal";
-    listItem?: never;
-    markDefs?: null;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-};
-
-export type SanityAssistInstructionUserInput = {
-  _type: "sanity.assist.instruction.userInput";
-  message?: string;
-  description?: string;
-};
-
-export type SanityAssistInstructionPrompt = Array<{
-  children?: Array<
-    | {
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }
-    | ({
-        _key: string;
-      } & SanityAssistInstructionFieldRef)
-    | ({
-        _key: string;
-      } & SanityAssistInstructionContext)
-    | ({
-        _key: string;
-      } & SanityAssistInstructionUserInput)
-  >;
-  style?: "normal";
-  listItem?: never;
-  markDefs?: null;
-  level?: number;
-  _type: "block";
-  _key: string;
-}>;
-
-export type SanityAssistInstructionFieldRef = {
-  _type: "sanity.assist.instruction.fieldRef";
-  path?: string;
-};
-
-export type SanityAssistInstruction = {
-  _type: "sanity.assist.instruction";
-  prompt?: SanityAssistInstructionPrompt;
-  icon?: string;
-  title?: string;
-  userId?: string;
-  createdById?: string;
-  output?: Array<
-    | ({
-        _key: string;
-      } & SanityAssistOutputField)
-    | ({
-        _key: string;
-      } & SanityAssistOutputType)
-  >;
-};
-
-export type SanityAssistSchemaTypeField = {
-  _type: "sanity.assist.schemaType.field";
-  path?: string;
-  instructions?: Array<
-    {
-      _key: string;
-    } & SanityAssistInstruction
-  >;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -491,28 +418,15 @@ export type AllSanitySchemaTypes =
   | PostReference
   | PageReference
   | NavigationZone
+  | Settings
+  | SanityImageCrop
+  | SanityImageHotspot
+  | HomePage
+  | Page
   | AuthorReference
   | Post
   | Author
-  | SanityImageCrop
-  | SanityImageHotspot
   | Slug
-  | Page
-  | Settings
-  | HomePage
-  | SanityAssistInstructionTask
-  | SanityAssistTaskStatus
-  | SanityAssistSchemaTypeAnnotations
-  | SanityAssistOutputType
-  | SanityAssistOutputField
-  | AssistInstructionContextReference
-  | SanityAssistInstructionContext
-  | AssistInstructionContext
-  | SanityAssistInstructionUserInput
-  | SanityAssistInstructionPrompt
-  | SanityAssistInstructionFieldRef
-  | SanityAssistInstruction
-  | SanityAssistSchemaTypeField
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -522,19 +436,18 @@ export type AllSanitySchemaTypes =
   | SanityImageAsset
   | Geopoint;
 
-export declare const internalGroqTypeReferenceTo: unique symbol;
-
 // Source: sanity/lib/queries.ts
 // Variable: settingsQuery
-// Query: *[_type == "settings"][0]
+// Query: coalesce(*[_type == "settings" && _id == "settings"][0],    select(count(*[_type == "settings"]) == 1 => *[_type == "settings"][0]))
 export type SettingsQueryResult = {
-  _id: string;
+  _id: "settings";
   _type: "settings";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
   title?: string;
   description?: string;
+  locale?: string;
   ogImage?: {
     asset?: SanityImageAssetReference;
     media?: unknown;
@@ -546,149 +459,85 @@ export type SettingsQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: navigationZoneQuery
-// Query: *[_type == "navigationZone" && identifier == $identifier][0] {    items[] {      ...,      link->{        ...,        title,        "slug": slug.current,      }    }  }
+// Query: *[_type == "navigationZone" && identifier == $identifier][0] {    items[] {      _key,      title,      url,      link->{        _type,        title,        "slug": slug.current,      }    }  }
 export type NavigationZoneQueryResult = {
   items: Array<{
-    title?: string;
+    _key: string;
+    title: string | null;
+    url: string | null;
     link:
       | {
-          _id: string;
           _type: "page";
-          _createdAt: string;
-          _updatedAt: string;
-          _rev: string;
           title: string | null;
           slug: string | null;
-          content?: Array<
-            | ({
-                _key: string;
-              } & YouTube)
-            | {
-                children?: Array<{
-                  marks?: Array<string>;
-                  text?: string;
-                  _type: "span";
-                  _key: string;
-                }>;
-                style?:
-                  | "blockquote"
-                  | "h2"
-                  | "h3"
-                  | "h4"
-                  | "h5"
-                  | "normal"
-                  | "tip";
-                listItem?: "bullet" | "number";
-                markDefs?: Array<{
-                  href?: string;
-                  _type: "link";
-                  _key: string;
-                }>;
-                level?: number;
-                _type: "block";
-                _key: string;
-              }
-            | {
-                asset?: SanityImageAssetReference;
-                media?: unknown;
-                hotspot?: SanityImageHotspot;
-                crop?: SanityImageCrop;
-                _type: "image";
-                _key: string;
-              }
-          >;
-          coverImage?: {
-            asset?: SanityImageAssetReference;
-            media?: unknown;
-            hotspot?: SanityImageHotspot;
-            crop?: SanityImageCrop;
-            alt?: string;
-            _type: "image";
-          };
-          metaDescription?: string;
-          ogTitle?: string;
-          ogImage?: OgImage;
-          noIndex?: boolean;
         }
       | {
-          _id: string;
           _type: "post";
-          _createdAt: string;
-          _updatedAt: string;
-          _rev: string;
           title: string | null;
           slug: string | null;
-          content?: Array<
-            | ({
-                _key: string;
-              } & YouTube)
-            | {
-                children?: Array<{
-                  marks?: Array<string>;
-                  text?: string;
-                  _type: "span";
-                  _key: string;
-                }>;
-                style?:
-                  | "blockquote"
-                  | "h2"
-                  | "h3"
-                  | "h4"
-                  | "h5"
-                  | "normal"
-                  | "tip";
-                listItem?: "bullet" | "number";
-                markDefs?: Array<{
-                  href?: string;
-                  _type: "link";
-                  _key: string;
-                }>;
-                level?: number;
-                _type: "block";
-                _key: string;
-              }
-            | {
-                asset?: SanityImageAssetReference;
-                media?: unknown;
-                hotspot?: SanityImageHotspot;
-                crop?: SanityImageCrop;
-                _type: "image";
-                _key: string;
-              }
-          >;
-          excerpt?: string;
-          coverImage?: {
-            asset?: SanityImageAssetReference;
-            media?: unknown;
-            hotspot?: SanityImageHotspot;
-            crop?: SanityImageCrop;
-            alt?: string;
-            _type: "image";
-          };
-          date?: string;
-          author?: AuthorReference;
-          metaDescription?: string;
-          ogTitle?: string;
-          ogImage?: OgImage;
-          noIndex?: boolean;
         }
       | null;
-    url?: string;
-    _type: "navigationItem";
-    _key: string;
   }> | null;
 } | null;
 
 // Source: sanity/lib/queries.ts
 // Variable: homePageQuery
-// Query: *[_type == "homePage"][0] {  ...,    metaDescription,  ogTitle,  ogImage,  noIndex}
+// Query: coalesce(*[_type == "homePage" && _id == "homePage"][0],    select(count(*[_type == "homePage"]) == 1 => *[_type == "homePage"][0])) {  _updatedAt,  title,  content[] {   ...,  _type == "block" => {    markDefs[] {      ...,      _type == "internalLink" => { "target": target->{_type, "slug": slug.current} }    }  },  _type == "image" => {    ...,    "lqip": asset->metadata.lqip  } },    metaDescription,  ogTitle,  ogImage,  noIndex}
 export type HomePageQueryResult = {
-  _id: string;
-  _type: "homePage";
-  _createdAt: string;
   _updatedAt: string;
-  _rev: string;
-  title?: string;
+  title: string | null;
+  content: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal" | "tip";
+        listItem?: "bullet" | "number";
+        markDefs: Array<
+          | {
+              target:
+                | {
+                    _type: "page";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "post";
+                    slug: string | null;
+                  }
+                | null;
+              _type: "internalLink";
+              _key: string;
+            }
+          | {
+              href?: string;
+              _type: "link";
+              _key: string;
+            }
+        > | null;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        asset?: SanityImageAssetReference;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        caption?: string;
+        _type: "image";
+        _key: string;
+        lqip: string | null;
+      }
+    | {
+        _key: string;
+        _type: "youTube";
+        url?: string;
+      }
+  > | null;
   metaDescription: string | null;
   ogTitle: string | null;
   ogImage: OgImage | null;
@@ -707,7 +556,7 @@ export type PostPathsQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: postsQuery
-// Query: *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,      coverImage {    ...,    "lqip": asset->metadata.lqip  },    "date": coalesce(date, _updatedAt),      "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
+// Query: *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc, _id asc) [$from...$to] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,      coverImage {    ...,    "lqip": asset->metadata.lqip  }  }
 export type PostsQueryResult = Array<{
   _id: string;
   title: string | "Untitled";
@@ -722,24 +571,11 @@ export type PostsQueryResult = Array<{
     _type: "image";
     lqip: string | null;
   } | null;
-  date: string;
-  author: {
-    name: string | "Anonymous";
-    picture: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
-    position: string | null;
-  } | null;
 }>;
 
 // Source: sanity/lib/queries.ts
 // Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content[] {        ...,  _type == "image" => {    ...,    "lqip": asset->metadata.lqip  }    },      coverImage {    ...,    "lqip": asset->metadata.lqip  },    "date": coalesce(date, _updatedAt),      "author": author->{"name": coalesce(name, "Anonymous"), picture, position},      metaDescription,  ogTitle,  ogImage,  noIndex  }
+// Query: *[_type == "post" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,    content[] {        ...,  _type == "block" => {    markDefs[] {      ...,      _type == "internalLink" => { "target": target->{_type, "slug": slug.current} }    }  },  _type == "image" => {    ...,    "lqip": asset->metadata.lqip  }    },      coverImage {    ...,    "lqip": asset->metadata.lqip  },    date,      "author": author->{"name": coalesce(name, "Anonymous"), picture, position, profileUrl},      metaDescription,  ogTitle,  ogImage,  noIndex  }
 export type PostQueryResult = {
   _id: string;
   _updatedAt: string;
@@ -756,11 +592,27 @@ export type PostQueryResult = {
         }>;
         style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal" | "tip";
         listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
+        markDefs: Array<
+          | {
+              target:
+                | {
+                    _type: "page";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "post";
+                    slug: string | null;
+                  }
+                | null;
+              _type: "internalLink";
+              _key: string;
+            }
+          | {
+              href?: string;
+              _type: "link";
+              _key: string;
+            }
+        > | null;
         level?: number;
         _type: "block";
         _key: string;
@@ -770,6 +622,8 @@ export type PostQueryResult = {
         media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
+        alt?: string;
+        caption?: string;
         _type: "image";
         _key: string;
         lqip: string | null;
@@ -789,7 +643,7 @@ export type PostQueryResult = {
     _type: "image";
     lqip: string | null;
   } | null;
-  date: string;
+  date: string | null;
   author: {
     name: string | "Anonymous";
     picture: {
@@ -801,44 +655,13 @@ export type PostQueryResult = {
       _type: "image";
     } | null;
     position: string | null;
+    profileUrl: string | null;
   } | null;
   metaDescription: string | null;
   ogTitle: string | null;
   ogImage: OgImage | null;
   noIndex: boolean | null;
 } | null;
-
-// Source: sanity/lib/queries.ts
-// Variable: moreStoriesQuery
-// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {    _id,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    excerpt,      coverImage {    ...,    "lqip": asset->metadata.lqip  },    "date": coalesce(date, _updatedAt),      "author": author->{"name": coalesce(name, "Anonymous"), picture, position}  }
-export type MoreStoriesQueryResult = Array<{
-  _id: string;
-  title: string | "Untitled";
-  slug: string | null;
-  excerpt: string | null;
-  coverImage: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-    lqip: string | null;
-  } | null;
-  date: string;
-  author: {
-    name: string | "Anonymous";
-    picture: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
-    position: string | null;
-  } | null;
-}>;
 
 // Source: sanity/lib/queries.ts
 // Variable: pagePathsQuery
@@ -852,7 +675,7 @@ export type PagePathsQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: pageQuery
-// Query: *[_type == "page" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    content[] {        ...,  _type == "image" => {    ...,    "lqip": asset->metadata.lqip  }    },      coverImage {    ...,    "lqip": asset->metadata.lqip  },      metaDescription,  ogTitle,  ogImage,  noIndex  }
+// Query: *[_type == "page" && slug.current == $slug] [0] {    _id,    _updatedAt,    "title": coalesce(title, "Untitled"),    "slug": slug.current,    content[] {        ...,  _type == "block" => {    markDefs[] {      ...,      _type == "internalLink" => { "target": target->{_type, "slug": slug.current} }    }  },  _type == "image" => {    ...,    "lqip": asset->metadata.lqip  }    },      coverImage {    ...,    "lqip": asset->metadata.lqip  },      metaDescription,  ogTitle,  ogImage,  noIndex  }
 export type PageQueryResult = {
   _id: string;
   _updatedAt: string;
@@ -868,11 +691,27 @@ export type PageQueryResult = {
         }>;
         style?: "blockquote" | "h2" | "h3" | "h4" | "h5" | "normal" | "tip";
         listItem?: "bullet" | "number";
-        markDefs?: Array<{
-          href?: string;
-          _type: "link";
-          _key: string;
-        }>;
+        markDefs: Array<
+          | {
+              target:
+                | {
+                    _type: "page";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "post";
+                    slug: string | null;
+                  }
+                | null;
+              _type: "internalLink";
+              _key: string;
+            }
+          | {
+              href?: string;
+              _type: "link";
+              _key: string;
+            }
+        > | null;
         level?: number;
         _type: "block";
         _key: string;
@@ -882,6 +721,8 @@ export type PageQueryResult = {
         media?: unknown;
         hotspot?: SanityImageHotspot;
         crop?: SanityImageCrop;
+        alt?: string;
+        caption?: string;
         _type: "image";
         _key: string;
         lqip: string | null;
@@ -907,18 +748,67 @@ export type PageQueryResult = {
   noIndex: boolean | null;
 } | null;
 
+// Source: sanity/lib/queries.ts
+// Variable: redirectsQuery
+// Query: {  "aliases": *[_type in ["page", "post"] && defined(slug.current) && count(previousSlugs) > 0] | order(_id asc) {    _type, "slug": slug.current, previousSlugs  },  "occupied": *[_type in ["page", "post"] && slug.current in *[_type in ["page", "post"] && defined(slug.current) && count(previousSlugs) > 0].previousSlugs[]] {    _type, "slug": slug.current  }}
+export type RedirectsQueryResult = {
+  aliases: Array<
+    | {
+        _type: "page";
+        slug: string | null;
+        previousSlugs: Array<string> | null;
+      }
+    | {
+        _type: "post";
+        slug: string | null;
+        previousSlugs: Array<string> | null;
+      }
+  >;
+  occupied: Array<
+    | {
+        _type: "page";
+        slug: string | null;
+      }
+    | {
+        _type: "post";
+        slug: string | null;
+      }
+  >;
+};
+
+// Source: sanity/lib/studio-queries.ts
+// Variable: slugConflictQuery
+// Query: *[_type == $type && !sanity::versionOf($id) && (slug.current in $slugs || count(previousSlugs[@ in $slugs]) > 0)][0]._id
+export type SlugConflictQueryResult = string | null;
+
+// Source: sanity/lib/studio-queries.ts
+// Variable: publishedSlugQuery
+// Query: *[_id == $id][0].slug.current
+export type PublishedSlugQueryResult = string | null;
+
+// Source: sanity/lib/studio-queries.ts
+// Variable: navigationConflictQuery
+// Query: *[_type == "navigationZone" && !sanity::versionOf($id) && identifier == $identifier][0]._id
+export type NavigationConflictQueryResult = string | null;
+
 // Query TypeMap
-import "@sanity/client";
-declare module "@sanity/client" {
+declare global {
   interface SanityQueries {
-    '*[_type == "settings"][0]': SettingsQueryResult;
-    '\n  *[_type == "navigationZone" && identifier == $identifier][0] {\n    items[] {\n      ...,\n      link->{\n        ...,\n        title,\n        "slug": slug.current,\n      }\n    }\n  }\n': NavigationZoneQueryResult;
-    '*[_type == "homePage"][0] {\n  ...,\n  \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n}': HomePageQueryResult;
+    '\n  coalesce(*[_type == "settings" && _id == "settings"][0],\n    select(count(*[_type == "settings"]) == 1 => *[_type == "settings"][0]))\n': SettingsQueryResult;
+    '\n  *[_type == "navigationZone" && identifier == $identifier][0] {\n    items[] {\n      _key,\n      title,\n      url,\n      link->{\n        _type,\n        title,\n        "slug": slug.current,\n      }\n    }\n  }\n': NavigationZoneQueryResult;
+    '\n  coalesce(*[_type == "homePage" && _id == "homePage"][0],\n    select(count(*[_type == "homePage"]) == 1 => *[_type == "homePage"][0])) {\n  _updatedAt,\n  title,\n  content[] { \n  ...,\n  _type == "block" => {\n    markDefs[] {\n      ...,\n      _type == "internalLink" => { "target": target->{_type, "slug": slug.current} }\n    }\n  },\n  _type == "image" => {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n },\n  \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n}': HomePageQueryResult;
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    "slug": slug.current,\n    _updatedAt,\n    _id,\n    noIndex\n  }\n': PostPathsQueryResult;
-    '\n  *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc) [$from...$to] {\n    _id,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    \n  coverImage {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n,\n    "date": coalesce(date, _updatedAt),\n    \n  "author": author->{"name": coalesce(name, "Anonymous"), picture, position}\n\n  }\n': PostsQueryResult;
-    '\n  *[_type == "post" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    content[] {\n      \n  ...,\n  _type == "image" => {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n\n    },\n    \n  coverImage {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n,\n    "date": coalesce(date, _updatedAt),\n    \n  "author": author->{"name": coalesce(name, "Anonymous"), picture, position}\n,\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n': PostQueryResult;
-    '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    _id,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    \n  coverImage {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n,\n    "date": coalesce(date, _updatedAt),\n    \n  "author": author->{"name": coalesce(name, "Anonymous"), picture, position}\n\n  }\n': MoreStoriesQueryResult;
+    '\n  *[_type == "post" && defined(slug.current) && slug.current != $slug] | order(date desc, _updatedAt desc, _id asc) [$from...$to] {\n    _id,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    \n  coverImage {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n\n  }\n': PostsQueryResult;
+    '\n  *[_type == "post" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    excerpt,\n    content[] {\n      \n  ...,\n  _type == "block" => {\n    markDefs[] {\n      ...,\n      _type == "internalLink" => { "target": target->{_type, "slug": slug.current} }\n    }\n  },\n  _type == "image" => {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n\n    },\n    \n  coverImage {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n,\n    date,\n    \n  "author": author->{"name": coalesce(name, "Anonymous"), picture, position, profileUrl}\n,\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n': PostQueryResult;
     '\n  *[_type == "page" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    "slug": slug.current,\n    _updatedAt,\n    _id,\n    noIndex\n  }\n': PagePathsQueryResult;
-    '\n  *[_type == "page" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    content[] {\n      \n  ...,\n  _type == "image" => {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n\n    },\n    \n  coverImage {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n,\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n': PageQueryResult;
+    '\n  *[_type == "page" && slug.current == $slug] [0] {\n    _id,\n    _updatedAt,\n    "title": coalesce(title, "Untitled"),\n    "slug": slug.current,\n    content[] {\n      \n  ...,\n  _type == "block" => {\n    markDefs[] {\n      ...,\n      _type == "internalLink" => { "target": target->{_type, "slug": slug.current} }\n    }\n  },\n  _type == "image" => {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n\n    },\n    \n  coverImage {\n    ...,\n    "lqip": asset->metadata.lqip\n  }\n,\n    \n  metaDescription,\n  ogTitle,\n  ogImage,\n  noIndex\n\n  }\n': PageQueryResult;
+    '{\n  "aliases": *[_type in ["page", "post"] && defined(slug.current) && count(previousSlugs) > 0] | order(_id asc) {\n    _type, "slug": slug.current, previousSlugs\n  },\n  "occupied": *[_type in ["page", "post"] && slug.current in *[_type in ["page", "post"] && defined(slug.current) && count(previousSlugs) > 0].previousSlugs[]] {\n    _type, "slug": slug.current\n  }\n}': RedirectsQueryResult;
+    "\n  *[_type == $type && !sanity::versionOf($id) && (slug.current in $slugs || count(previousSlugs[@ in $slugs]) > 0)][0]._id\n": SlugConflictQueryResult;
+    "*[_id == $id][0].slug.current": PublishedSlugQueryResult;
+    '\n  *[_type == "navigationZone" && !sanity::versionOf($id) && identifier == $identifier][0]._id\n': NavigationConflictQueryResult;
   }
+}
+// Lets @sanity/client releases that predate the global registry read it too
+declare module "@sanity/client" {
+  interface SanityQueries extends globalThis.SanityQueries {}
 }

@@ -1,5 +1,6 @@
 import { CogIcon } from "@sanity/icons"
 import { defineField, defineType } from "sanity"
+import { defaultLocale } from "@/sanity/lib/locale"
 
 
 export default defineType({
@@ -23,15 +24,28 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "locale",
+      title: "Site language",
+      type: "string",
+      description: "A language tag such as de-DE or en-US.",
+      initialValue: defaultLocale,
+      validation: (rule) => rule.custom((value) => {
+        if (!value) return true
+        try {
+          new Intl.Locale(value)
+          return true
+        } catch {
+          return "Enter a valid language tag."
+        }
+      }),
+    }),
+    defineField({
       name: "ogImage",
       title: "Open Graph Image",
       type: "image",
-      description: "Displayed on social cards and search engine results.",
+      description: "The default image for social shares.",
       options: {
         hotspot: true,
-        aiAssist: {
-          imageDescriptionField: "alt",
-        },
       }
     }),
   ],

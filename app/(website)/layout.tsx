@@ -1,57 +1,30 @@
 import "../globals.css"
 
 import type { Metadata, Viewport } from "next"
-import { VisualEditing } from "next-sanity/visual-editing"
-import { Inter } from "next/font/google"
 import { draftMode } from "next/headers"
 
 import AlertBanner from "./alert-banner"
+import DraftVisualEditing from "./draft-visual-editing"
 
-import { sanityFetch } from "@/sanity/lib/fetch"
-import { settingsQuery } from "@/sanity/lib/queries"
-import { resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { getSiteOrigin } from "@/lib/site-url"
+import { getLocale } from "@/sanity/lib/locale"
 import { Suspense } from "react"
 import { Footer } from "./footer"
 import { Header } from "./header"
+import { fetchPlainSettings } from "./metadata"
 import Provider from "./provider"
 
-const locale = "de_DE"
-
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await sanityFetch({
-    query: settingsQuery,
-    // Metadata should never contain stega
-    stega: false,
-    tags: ["settings"]
-  })
-  const title = settings?.title || "Replace this title"
-  const description = settings?.description
-
-  const ogImage = resolveOpenGraphImage(settings?.ogImage)
-  let metadataBase: URL | undefined = undefined
-  try {
-    metadataBase = process.env.SITE_URL
-      ? new URL(process.env.SITE_URL)
-      : undefined
-  } catch {
-    // ignore
-  }
+  const settings = await fetchPlainSettings()
+  const title = settings?.title || "Website"
 
   return {
-    metadataBase,
+    metadataBase: new URL(getSiteOrigin()),
     title: {
       template: `%s | ${title}`,
       default: title,
     },
-    description: description,
-    openGraph: {
-      images: ogImage ? [ogImage] : [],
-      ...(settings?.title && { title: settings.title }),
-      locale,
-    },
-    robots: {
-      index: true,
-    },
+    description: settings?.description,
   }
 }
 
@@ -61,21 +34,15 @@ export function generateViewport(): Viewport {
   }
 }
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-})
-
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const { isEnabled: isDraftMode } = await draftMode()
+  const [{ isEnabled: isDraftMode }, settings] = await Promise.all([draftMode(), fetchPlainSettings()])
 
   return (
-    <html lang={locale?.split('_')[0] || 'en'} className={`${inter.variable} bg-white text-black`}>
+    <html lang={getLocale(settings?.locale).baseName} className="bg-white text-black">
       <body>
         <Provider>
           {isDraftMode && <AlertBanner />}
@@ -86,7 +53,7 @@ export default async function RootLayout({
           <Suspense>
             <Footer />
           </Suspense>
-          {isDraftMode && <VisualEditing />}
+          {isDraftMode && <DraftVisualEditing />}
         </Provider>
       </body>
     </html>

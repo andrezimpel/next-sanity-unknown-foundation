@@ -6,16 +6,12 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true,
+  useCdn: false,
   perspective: "published",
   stega: {
+    enabled: false,
     studioUrl,
-    filter: (props) => {
-      if (props.sourcePath.at(-1) === "title") {
-        return true;
-      }
-
-      return props.filterDefault(props);
-    },
+    filter: ({ sourcePath }) =>
+      ["title", "name", "excerpt", "caption", "text"].includes(String(sourcePath.at(-1))),
   },
 });
