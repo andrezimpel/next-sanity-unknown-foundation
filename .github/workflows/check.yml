@@ -1,0 +1,36 @@
+name: Check
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        include:
+          - deployment: production
+            node: "22"
+          - deployment: preview
+            node: "22.20.0"
+    env:
+      NEXT_PUBLIC_SANITY_PROJECT_ID: foundationfixture
+      NEXT_PUBLIC_SANITY_DATASET: fixture
+      FOUNDATION_TEST_ENV: ${{ matrix.deployment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile --non-interactive
+      - run: yarn lint
+      - run: yarn typegen
+      - run: git diff --exit-code -- schema.json sanity.types.ts
+      - run: yarn typecheck
+      - run: yarn test
+      - run: yarn playwright install --with-deps --only-shell chromium
+      - run: yarn test:production

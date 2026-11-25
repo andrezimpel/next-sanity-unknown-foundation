@@ -19,6 +19,13 @@ export default defineType({
       type: "string",
     }),
     defineField({
+      name: "profileUrl",
+      title: "Profile URL",
+      type: "url",
+      description: "A public page identifying this author.",
+      validation: (rule) => rule.uri({ scheme: ["https", "http"] }),
+    }),
+    defineField({
       name: "picture",
       title: "Picture",
       type: "image",
@@ -40,9 +47,6 @@ export default defineType({
       ],
       options: {
         hotspot: true,
-        aiAssist: {
-          imageDescriptionField: "alt",
-        },
       },
       validation: (rule) => rule.required(),
     }),

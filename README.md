@@ -1,249 +1,85 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/andrezimpel/next-sanity-unknown-foundation&integration-ids=oac_hb2LITYajhRQ0i4QznmKH7gx&project-name=Next-Sanity-Foundation&repository-name=next-sanity-foundation&demo-description=A%20statically%20generated%20website%20example%20using%20Next.js%20and%20Sanity)
+# Next.js and Sanity Foundation
 
-> **🚀 Quick Deploy**: Click the button above to deploy this project to Vercel with Sanity integration automatically configured!
+An App Router website with Sanity Studio at `/studio`, published pages served through tag-based ISR, and Studio Draft Mode for visual editing.
 
-### What happens during deployment:
+## Local setup
 
-1. **Repository Cloning**: Vercel clones this repository to your GitHub account
-2. **Sanity Integration**: The Sanity integration is automatically enabled
-3. **Project Setup**: A new Vercel project is created with suggested settings
-4. **Environment Variables**: You'll be prompted to configure Sanity environment variables
+1. Use Node 22.20 or later on the Node 22 release line and Yarn Classic 1.22.
+2. Run `yarn install --frozen-lockfile`.
+3. For an existing Sanity project, copy `.env.example` to `.env.local` and fill in the project ID and public dataset. To create or select a project interactively, run `yarn setup` and add the remaining variables from the example.
+4. Set `SITE_URL=http://localhost:3000` locally. For Studio Draft Mode, add a Viewer token as `SANITY_API_READ_TOKEN`. Draft previews subscribe to Sanity’s Live Content API through `/api/draft-mode/events`, which authenticates the stream on the server.
+5. Run `yarn dev`. Open `http://localhost:3000/studio` and publish Settings and Home Page. Create a Page with slug `posts` for the blog listing. The navigation identifiers `header` and `legal` populate the header and footer.
 
-### Post-Deployment Steps:
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Sanity project ID |
+| `NEXT_PUBLIC_SANITY_DATASET` | Public dataset for published reads |
+| `NEXT_PUBLIC_SANITY_API_VERSION` | Optional override for the API date in `sanity/lib/api.ts` |
+| `SITE_URL` | Canonical origin, such as `http://localhost:3000` locally or `https://www.example.com` for deployment |
+| `SANITY_API_READ_TOKEN` | Server-only Viewer token for Studio Draft Mode |
+| `SANITY_REVALIDATE_SECRET` | Shared secret for signed Sanity webhooks |
+| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | Plausible site identifier if analytics is configured |
 
-After deployment, you'll need to:
+Set `SITE_URL` to the production origin on Vercel, including on preview deployments. Keep preview deployments protected. The app adds `X-Robots-Tag: noindex` on Vercel previews. If Studio runs on a separate origin, configure the preview origin and allow it with credentials in Sanity’s CORS settings. Studio Draft Mode is the only entry point for stega overlays. [Sanity visual editing setup](https://www.sanity.io/docs/nextjs/visual-editing-with-next-js-app-router)
 
-1. **Configure Sanity Studio**: Visit your Sanity Studio at `https://your-project.vercel.app/studio`
-2. **Set up your Sanity project**: Create a new Sanity project or connect to an existing one
-3. **Configure environment variables**: Add your Sanity project ID, dataset, and API tokens
-4. **Create content**: Start creating pages, posts, and other content in Sanity Studio
+## Optional Studio plugins
 
-## Setup Instructions
+Install either plugin independently and add its entry to the existing `plugins` array in `sanity.config.ts`.
 
-### Install Dependencies
+| Feature | Install | Import in `sanity.config.ts` | Plugin entry |
+| --- | --- | --- | --- |
+| AI Assist | `yarn add --exact @sanity/assist@6.2.6` | `import { assist } from "@sanity/assist"` | `assist()` |
+| Unsplash image picker | `yarn add --exact sanity-plugin-asset-source-unsplash@7.0.30` | `import { unsplashImageAsset } from "sanity-plugin-asset-source-unsplash"` | `unsplashImageAsset()` |
 
-To get started, install the latest versions of the necessary packages:
+Run `yarn typegen` after changing the config, then restart `yarn dev` or rebuild the embedded Studio.
 
-```bash
-yarn add next@latest next-sanity@latest sanity@latest @sanity/vision@latest react@latest react-dom@latest schema-dts@latest postcss@latest tailwindcss@latest tailwindcss-animate@latest
+**AI Assist.** On a project with AI Assist access, open a document in `/studio`. A project member with token creation permission can finish setup from the sparkle menu under **Manage instructions → Enable AI assistance**. For generated image descriptions, add `aiAssist: { imageDescriptionField: "alt" }` to the `options` of an image field that has an `alt` subfield. [Sanity AI Assist setup](https://www.sanity.io/docs/studio/install-and-configure-sanity-ai-assist)
+
+To use the starter’s original post-writing and excerpt presets, copy `sanity/plugins/assist.ts.example` to `sanity/plugins/assist.ts`. Use `import { assistWithPresets } from "./sanity/plugins/assist"` and register `assistWithPresets()` in place of `assist()`.
+
+**Unsplash.** Open an image field in Studio and choose Unsplash from its asset sources. [Unsplash plugin documentation](https://github.com/sanity-io/plugins/tree/main/plugins/sanity-plugin-asset-source-unsplash)
+
+## Sanity webhook
+
+In Sanity Manage, create a webhook for the deployed `/api/revalidate` endpoint. Use POST, a matching secret, and create, update, and delete triggers. Leave draft and version triggers off. Use API version `2025-07-15` or later.
+
+Use this filter.
+
+```groq
+coalesce(after()._type, before()._type) in ["page", "post", "author", "homePage", "settings", "navigationZone"]
 ```
 
-### Environment Configuration
+Use this projection.
 
-Set up your `.env.local` file with the following environment variables through Vercel:
+```groq
+{
+  "tags": [coalesce(after()._type, before()._type)],
+  "urlsChanged": before().slug.current != after().slug.current ||
+    count(coalesce(before().previousSlugs, [])[!(@ in coalesce(after().previousSlugs, []))]) > 0 ||
+    count(coalesce(after().previousSlugs, [])[!(@ in coalesce(before().previousSlugs, []))]) > 0
+}
+```
 
-- `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`
-- `NEXT_PUBLIC_SANITY_DATASET`
-- `NEXT_PUBLIC_SANITY_PROJECT_ID`
-- `SANITY_API_READ_TOKEN`
-- `SANITY_REVALIDATE_SECRET`
-- `SITE_URL`
+Update the projection on existing webhooks to keep the redirect map cached after content-only edits. Signed payloads containing only `tags`, including `[type, "type:slug"]` and `[type, null]`, still expire redirects on every page or post event. Each accepted delivery marks matching content stale so it can regenerate on the next visit. For a protected staging deployment, send Vercel’s automation bypass header with the webhook. [Sanity webhook setup](https://www.sanity.io/docs/content-lake/webhooks)
 
-### Webhooks Setup
+## Publishing for search
 
-Configure webhooks in Sanity to revalidate data for pages and posts. Use the following URL for the webhook:
+- In rich text, use **Internal link** to select a Page or Post. Publishing a new target slug updates the link on referring pages through the webhook. Use the URL link for external addresses.
+- To rename a page or post, add its old slug to **Previous slugs** and publish the change. The listing’s `posts` slug stays fixed. When a current or former URL is added, removed, or changed, the webhook expires the redirect map. Proxy loads it on the next lookup and preserves query parameters. Redirects have no timer, so a missed URL-change delivery needs to be retried. Vercel Runtime Cache shares the map across function instances in each region. The in-memory fallback supports a single server process. Multi-process self-hosting needs shared cache invalidation.
+- Set **Settings → Title** to the public site name. The homepage uses it and the canonical site URL for its `WebSite` structured data.
+- Use **No Index** to exclude a public URL from the sitemap and request deindexing. Search crawlers can still visit it and read the directive. Robots rules allow search crawlers and opt out of OpenAI training crawl through the separate `GPTBot` rule.
+- Set the content language in Settings. Add a homepage body and visible author details for real sites. Use the [Next.js internationalization guide](https://nextjs.org/docs/app/guides/internationalization) when adding translated routes.
 
-- [Sanity Webhook for Tag-based Revalidation](https://www.sanity.io/manage/webhooks/share?name=Tag-based%20revalidation%20hook%20for%20slug%20based%20documents%202&description=&url=https%3A%2F%2F6f4f-91-0-56-217.ngrok-free.app%2Fapi%2Frevalidate&on=create&on=update&on=delete&filter=_type%20in%20%5B%22post%22%2C%20%22page%22%2C%20%22homePage%22%2C%20%22settings%22%5D&projection=%7B%22tags%22%3A%20%5B_type%2C%20_type%20%2B%20%22%3A%22%20%2B%20slug.current%5D%7D&httpMethod=POST&apiVersion=v2025-02-19&includeDrafts=&includeAllVersions=&headers=%7B%7D)
+## Verify changes
 
-> **Note:** Do not forget to include the secret.
+```sh
+yarn lint
+yarn typegen
+yarn typecheck
+yarn test
+yarn playwright install --only-shell chromium
+yarn test:production
+FOUNDATION_TEST_ENV=preview yarn test:production
+```
 
-### Update Icons
-
-- Update `favicon.ico`.
-- Add icons in the following formats: `.ico`, `.jpg`, `.jpeg`, `.png`, `.svg`.
-- Add Apple icons in the following formats: `.jpg`, `.jpeg`, `.png`.
-
-For more details, see [Next.js App Icons Documentation](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons#image-files-ico-jpg-png).
-
-### Internationalization
-
-Set up internationalization if needed. Refer to the [Next.js Internationalization Guide](https://nextjs.org/docs/app/building-your-application/routing/internationalization).
-
-### Layout Customization
-
-Replace the viewport theme color in `layout.tsx`.
-
-### Analytics Setup
-
-Set up Plausible Analytics at [Plausible.io](https://plausible.io/).
-
-### Content Creation
-
-- Create settings.
-- Create a home page document.
-- Create pages.
-- Create posts.
-- Create navigation zones.
-
-> **Tip:** Use the page as a base for other document types. Ensure to update `sitemap.tsx` and `robots.tsx` if needed.
-
-### Deployment
-
-Deploy your project using Vercel. Adjust the deployment settings as necessary:
-
-- [Deploy with Vercel](https://vercel.com/new/clone?demo-description=A%20statically%20generated%20website%20example%20using%20Next.js%20and%20Sanity&from=templates&integration-ids=oac_hb2LITYajhRQ0i4QznmKH7gx&project-name=Blog+Starter+Kit+with+Sanity&repository-name=website-next-sanity&repository-url=https%3A%2F%2Fgithub.com%2Fandrezimpel%2Fnext-sanity-unknown-foundation)
-
-Ensure all configurations are correctly set before deploying.
-
-### Internationalization Setup
-
-To implement internationalization in your project, follow these steps:
-
-1. **Organize Content:**
-   - Move the contents of your website into a new folder structure: `(website)/[lang]/contents`.
-
-2. **Configure Locales:**
-   - Export locales in `@next.config.ts`:
-     ```javascript
-     export const locales = {
-       de: {
-         title: "Deutsch",
-         id: "de",
-         defaultLocale: true
-       },
-       en: {
-         title: "English",
-         id: "en",
-       },
-     }
-
-     export const defaultLocale = locales.de
-     ```
-
-3. **Middleware for Locale Redirection:**
-   - Add a middleware to redirect users based on their browser's locale:
-     ```javascript
-     import { match } from '@formatjs/intl-localematcher'
-     import Negotiator from 'negotiator'
-     import { NextRequest, NextResponse } from "next/server"
-     import { locales, defaultLocale } from './next.config'
-
-     function getLocale(request: NextRequest) {
-       const headers = Object.fromEntries(request.headers.entries())
-       let languages = new Negotiator({ headers }).languages()
-       return match(languages, locales.map(l => l.id), defaultLocale)
-     }
-
-     export function middleware(request: NextRequest) {
-       const { pathname } = request.nextUrl
-       const pathnameHasLocale = locales.some(
-         (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-       )
-
-       if (pathnameHasLocale) return
-
-       const nextLocaleCookie = request.cookies.get('NEXT_LOCALE')
-       if (nextLocaleCookie) {
-         const localeValue = nextLocaleCookie.value
-         request.nextUrl.pathname = `/${localeValue}${pathname}`
-         return NextResponse.redirect(request.nextUrl)
-       }
-
-       const locale = getLocale(request)
-       request.nextUrl.pathname = `/${locale}${pathname}`
-       const response = NextResponse.redirect(request.nextUrl)
-       response.cookies.set('NEXT_LOCALE', locale, { maxAge: 90 * 24 * 60 * 60 })
-       return response
-     }
-
-     export const config = {
-       matcher: ['/'],
-     }
-     ```
-
-4. **Dictionaries:**
-   - Create a `dictionaries.ts` file in the `(website)/[lang]` folder:
-     ```javascript
-     import { locales } from '@/next.config'
-     import 'server-only'
-
-     type LocaleKeys = (typeof locales)[number]['id']
-
-     const dictionaries: Record<LocaleKeys, () => Promise<any>> = {
-       de: () => import('@/dictionaries/de.json').then((module) => module.default),
-       en: () => import('@/dictionaries/en.json').then((module) => module.default),
-     }
-
-     export const getDictionary = async (locale: LocaleKeys) =>
-       dictionaries[locale]()
-     ```
-
-5. **Sanity Internationalization:**
-   - Install `@sanity/document-internationalization` and configure it in `sanity.config.ts`:
-     ```javascript
-     import {defineConfig} from 'sanity'
-     import {documentInternationalization} from '@sanity/document-internationalization'
-
-     export const defineConfig({
-       plugins: [
-         documentInternationalization({
-           supportedLanguages: locales,
-           schemaTypes: [...singletons, ...documents].map((type) => type.name),
-         })
-       ]
-     })
-     ```
-
-6. **Language Field in Content Types:**
-   - Add a language field to content types for translations:
-     ```javascript
-     defineField({
-       name: 'language',
-       type: 'string',
-       readOnly: true,
-       hidden: true,
-     })
-     ```
-
-  **Update the Slug Field**: Add a custom validation rule to the slug field in your document schema.
-
-   ```javascript
-   export default {
-     name: 'yourDocumentType',
-     type: 'document',
-     title: 'Your Document Title',
-     fields: [
-       // ... other fields ...
-       {
-         name: 'slug',
-         type: 'slug',
-         title: 'Slug',
-         options: {
-           source: 'title', // or another field that generates the slug
-           maxLength: 96,
-         },
-         validation: (Rule) => Rule.required().custom(async (slug, context) => {
-           const isUnique = await isUniqueOtherThanLanguage(slug.current, context)
-           return isUnique || 'This slug is already in use for the selected language.'
-         }),
-       },
-       // ... other fields ...
-     ],
-   }
-   ```
-
-7. **Querying Translations:**
-   - Use GROQ to query translations:
-     ```javascript
-     "_translations": * [_type == "translation.metadata" && references(^._id)].translations[].value -> {
-       "slug": slug.current,
-       language
-     }
-     ```
-
-8. **Sanity AI Translations:**
-   - Configure AI translations with Sanity Assist:
-     ```javascript
-     import { assist } from "@sanity/assist"
-
-     assist({
-       translate: {
-         document: {
-           languageField: 'language',
-           documentTypes: [...singletons, ...documents].map((type) => type.name),
-         }
-       }
-     })
-     ```
-
-Ensure to follow these steps to set up internationalization in your project effectively.
+Commit the two generated files after schema or query changes. The production smoke tests build in a temporary directory with synthetic Sanity data and use a local server. Verify actual Studio overlays, webhook deliveries, and production host redirects on a staging deployment before cutover. After launch, verify index coverage and sitemap status in Google Search Console and Bing Webmaster Tools.

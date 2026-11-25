@@ -16,7 +16,7 @@ export default function NotFound() {
         The page you are looking for does not exist.<br />
         It might have been moved or deleted.
       </p>
-      <Button variant="default" className="mt-4">
+      <Button asChild variant="default" className="mt-4">
         <Link href="/">Back to Home</Link>
       </Button>
     </div>

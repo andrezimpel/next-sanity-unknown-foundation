@@ -1,43 +1,13 @@
 import { sanityFetch } from "@/sanity/lib/fetch"
-import { navigationZoneQuery, settingsQuery } from "@/sanity/lib/queries"
-import { resolvePathname } from "@/sanity/lib/utils"
-import Link from "next/link"
+import { settingsQuery } from "@/sanity/lib/queries"
+import { NavigationLinks } from "./navigation-links"
 
 export async function Footer() {
-  const [settings, navigationZone] = await Promise.all([
-    sanityFetch({
-      query: settingsQuery,
-      tags: ["settings"]
-    }),
-    sanityFetch({
-      query: navigationZoneQuery,
-      params: {
-        identifier: "legal",
-      },
-      tags: ["navigationZone", "post", "page", "homePage"]
-    })
-  ])
-
+  const settings = await sanityFetch({ query: settingsQuery, tags: ["settings"] })
   return (
-    <footer className="container border-t border-gray-200 py-6 flex justify-between items-center text-sm">
-      <div>
-        Ⓒ {new Date().getFullYear()} {settings?.title || "Untitled"}
-      </div>
-      <nav>
-        <ul>
-          {navigationZone?.items?.map((item, index) => (
-            <li key={item?._key || index}>
-              <Link
-                href={item?.url || resolvePathname(item?.link?._type, item?.link?.slug) || ""}
-                className="px-2 py-1 hover:underline"
-                target={item?.url && !item?.url.startsWith(process.env.SITE_URL || "") ? "_blank" : "_self"}
-              >
-                {item?.title || item?.link?.title || "Untitled"}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+    <footer className="container flex items-center justify-between border-t border-gray-200 py-6 text-sm">
+      <div>© {new Date().getFullYear()} {settings?.title}</div>
+      <NavigationLinks identifier="legal" label="Legal" className="px-2 py-1 hover:underline" />
     </footer>
   )
 }

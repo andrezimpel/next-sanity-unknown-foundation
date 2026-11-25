@@ -2,6 +2,7 @@ import { HomeIcon } from "@sanity/icons"
 import { defineField, defineType } from "sanity"
 
 import metafields from "../metafields"
+import blockStyles from "../block-styles"
 
 /**
  * This file is the schema definition for the home page.
@@ -22,6 +23,12 @@ export default defineType({
       type: "string",
       description: "The title of the home page.",
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "content",
+      title: "Content",
+      type: "array",
+      of: blockStyles,
     }),
     ...metafields()
   ],

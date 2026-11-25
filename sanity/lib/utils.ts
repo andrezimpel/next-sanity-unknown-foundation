@@ -1,7 +1,10 @@
 import { createImageUrlBuilder } from "@sanity/image-url"
-import { type PortableTextBlock } from "next-sanity"
+import { stegaClean } from "next-sanity"
+
+import { siteUrl } from "@/lib/site-url"
 
 import { dataset, projectId } from "@/sanity/lib/api"
+import { resolvePathname } from "./routes"
 
 const imageBuilder = createImageUrlBuilder({
   projectId: projectId || "",
@@ -19,58 +22,12 @@ export const urlForImage = (source: any) => {
 
 export function resolveOpenGraphImage(image: any, width = 1200, height = 627) {
   if (!image) return
-  const url = urlForImage(image)?.width(1200).height(627).fit("crop").url()
+  const url = urlForImage(image)?.width(width).height(height).fit("crop").url()
   if (!url) return
-  return { url, alt: image?.alt as string, width, height }
+  return { url, alt: stegaClean(image.alt ?? ""), width, height }
 }
 
-/**
- * Returns a root-relative pathname for a document, e.g. "/posts/my-slug".
- * Use for internal <Link href>, <a href>, and robots.txt entries.
- */
-export function resolvePathname(
-  documentType?: string,
-  slug?: string | null,
-): string | undefined {
-  if (!slug) return undefined
-
-  switch (documentType) {
-    case "page":
-      return `/${slug}`
-    case "post":
-      return `/posts/${slug}`
-    default:
-      console.warn("Invalid document type:", documentType)
-      return undefined
-  }
-}
-
-/**
- * Returns an absolute URL for a document, e.g. "https://example.com/posts/my-slug".
- * Use for canonical tags, JSON-LD, sitemap entries, and OG metadata.
- */
-export function resolveUrl(
-  documentType?: string,
-  slug?: string | null,
-): string | undefined {
+export function resolveUrl(documentType?: string, slug?: string | null) {
   const pathname = resolvePathname(documentType, slug)
-  if (!pathname) return undefined
-  return `${process.env.SITE_URL}${pathname}`
-}
-
-export function toPlainText(blocks: PortableTextBlock[] = []) {
-  return blocks
-    // loop through each block
-    .map(block => {
-      // if it's not a text block with children, 
-      // return nothing
-      if (block._type !== 'block' || !block.children) {
-        return ''
-      }
-      // loop through the children spans, and join the
-      // text strings
-      return block.children.map((child) => child.text).join('')
-    })
-    // join the paragraphs leaving split by two linebreaks
-    .join('\n\n')
+  return pathname ? siteUrl(pathname) : undefined
 }

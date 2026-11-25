@@ -3,8 +3,7 @@
  * This config is used to set up Sanity Studio that's mounted on the `app/(sanity)/studio/[[...tool]]/page.tsx` route
  */
 import { visionTool } from "@sanity/vision"
-import { PluginOptions, defineConfig } from "sanity"
-import { unsplashImageAsset } from "sanity-plugin-asset-source-unsplash"
+import { defineConfig } from "sanity"
 import {
   defineDocuments,
   defineLocations,
@@ -14,8 +13,7 @@ import {
 import { structureTool } from "sanity/structure"
 
 import { apiVersion, dataset, projectId, studioUrl } from "@/sanity/lib/api"
-import { resolvePathname } from "@/sanity/lib/utils"
-import { assistWithPresets } from "@/sanity/plugins/assist"
+import { resolvePathname } from "@/sanity/lib/routes"
 import { pageStructure, singletonPlugin } from "@/sanity/plugins/settings"
 import author from "@/sanity/schemas/documents/author"
 import post from "@/sanity/schemas/documents/post"
@@ -29,6 +27,16 @@ const homeLocation = {
   title: "Home",
   href: "/",
 } satisfies DocumentLocation
+
+function documentLocations(type: "page" | "post") {
+  return defineLocations({
+    select: { title: "title", slug: "slug.current" },
+    resolve: (doc) => {
+      const href = resolvePathname(type, doc?.slug)
+      return { locations: href ? [{ title: doc?.title || "Untitled", href }] : [] }
+    },
+  })
+}
 
 const singletons = [homePage, settings]
 const documents = [page, post, author, navigationZone]
@@ -53,8 +61,16 @@ export default defineConfig({
       resolve: {
         mainDocuments: defineDocuments([
           {
+            route: "/",
+            filter: '_type == "homePage" && (_id == "homePage" || count(*[_type == "homePage"]) == 1)',
+          },
+          {
             route: "/posts/:slug",
             filter: `_type == "post" && slug.current == $slug`,
+          },
+          {
+            route: "/:slug",
+            filter: '_type == "page" && slug.current == $slug',
           },
         ]),
         locations: {
@@ -63,21 +79,9 @@ export default defineConfig({
             message: "This document is used on all pages",
             tone: "caution",
           }),
-          post: defineLocations({
-            select: {
-              title: "title",
-              slug: "slug.current",
-            },
-            resolve: (doc) => ({
-              locations: [
-                {
-                  title: doc?.title || "Untitled",
-                  href: resolvePathname("post", doc?.slug)!,
-                },
-                homeLocation,
-              ],
-            }),
-          }),
+          homePage: defineLocations({ locations: [homeLocation] }),
+          page: documentLocations("page"),
+          post: documentLocations("post"),
         },
       },
       previewUrl: { previewMode: { enable: "/api/draft-mode/enable" } },
@@ -85,13 +89,8 @@ export default defineConfig({
     structureTool({ structure: pageStructure([...singletons]) }),
     // Configures the global "new document" button, and document actions, to suit the Settings document singleton
     singletonPlugin(singletons.map((singleton) => singleton.name)),
-    // Add an image asset source for Unsplash
-    unsplashImageAsset(),
-    // Sets up AI Assist with preset prompts
-    // https://www.sanity.io/docs/ai-assist
-    assistWithPresets(),
     // Vision lets you query your content with GROQ in the studio
     // https://www.sanity.io/docs/the-vision-plugin
     visionTool({ defaultApiVersion: apiVersion }),
-  ].filter(Boolean) as PluginOptions[],
+  ],
 })

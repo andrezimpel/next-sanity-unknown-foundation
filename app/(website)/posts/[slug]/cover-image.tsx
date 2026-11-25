@@ -1,34 +1,31 @@
-import { PostQueryResult } from "@/sanity.types"
+import { getImageProps } from "next/image"
+import { stegaClean } from "next-sanity"
+
+import type { PostQueryResult } from "@/sanity.types"
 import { urlForImage } from "@/sanity/lib/utils"
-import { getImageProps, ImageProps } from "next/image"
 
 export function PostCoverImage({ image }: { image: NonNullable<PostQueryResult>["coverImage"] }) {
-  if (!image || !image?.asset?._ref) {
-    return (
-      <div className="bg-slate-50" style={{ paddingTop: "50%" }} />
-    )
-  }
+  const url = urlForImage(image)
+  if (!url) return <div className="aspect-[2/1] bg-slate-50" />
 
-  const common: Omit<ImageProps, "src"> = {
-    alt: image?.alt || "",
-    priority: true,
-    blurDataURL: image?.lqip || "",
-    placeholder: "blur",
-  }
-
-  const {
-    props: { srcSet: mobile },
-  } = getImageProps({ ...common, width: 700, height: 900, src: urlForImage(image)?.height(900).width(700).url() as string })
-
-  const {
-    props: { srcSet: desktop, ...rest },
-  } = getImageProps({ ...common, width: 2000, height: 1000, src: urlForImage(image)?.height(1000).width(2000).url() as string })
+  const alt = stegaClean(image?.alt) || ""
+  const mobile = getImageProps({
+    alt, width: 700, height: 900, sizes: "100vw",
+    src: url.width(700).height(900).fit("crop").url(),
+  }).props
+  const desktop = getImageProps({
+    alt, width: 2000, height: 1000, sizes: "100vw",
+    src: url.width(2000).height(1000).fit("crop").url(),
+    loading: "eager", fetchPriority: "high",
+    className: "h-auto w-full",
+  }).props
 
   return (
     <picture>
-      <source media={`(min-width: var(--breakpoint-md))`} srcSet={desktop} />
-      <source media={`(max-width: var(--breakpoint-md))`} srcSet={mobile} />
-      <img {...rest} alt={image?.alt || ""} />
+      <source media="(width < 48rem)" srcSet={mobile.srcSet} sizes={mobile.sizes} width={700} height={900} />
+      {/* getImageProps generates the optimized sources for picture. */}
+      {/* eslint-disable-next-line jsx-a11y/alt-text */}
+      <img {...desktop} />
     </picture>
   )
 }

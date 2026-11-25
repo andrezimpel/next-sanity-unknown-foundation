@@ -23,10 +23,10 @@ const allFields = {
     name: 'ogTitle',
     title: 'Open Graph Title',
     type: 'string',
-    description: 'The title for the page, displayed in search engine results. Not the same as the regular title.',
+    description: 'Optional title for social shares.',
     validation: (Rule) =>
       Rule.max(60)
-        .warning('Meta title should not exceed 60 characters for best SEO performance.'),
+        .warning('Social titles longer than 60 characters may be truncated.'),
   }),
   ogImage: defineField({
     name: "ogImage",
@@ -35,9 +35,6 @@ const allFields = {
     description: "The main image for the post.",
     options: {
       hotspot: true,
-      aiAssist: {
-        imageDescriptionField: "alt",
-      },
     },
     fields: [
       {
@@ -55,7 +52,6 @@ const allFields = {
         },
       },
     ],
-    hidden: ({ document }) => !!document?.coverImage,
   }),
   noIndex: defineField({
     name: 'noIndex',

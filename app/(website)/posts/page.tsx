@@ -1,88 +1,51 @@
+import type { Metadata } from "next"
+import type { WebPage, WithContext } from "schema-dts"
+
 import { JsonLd } from "@/components/jsonld"
 import PortableText from "@/components/portable-text"
 import { PostGrid } from "@/components/post-grid"
-import { sanityFetch } from "@/sanity/lib/fetch"
-import { pageQuery, postsQuery } from "@/sanity/lib/queries"
-import { resolveOpenGraphImage, resolveUrl } from "@/sanity/lib/utils"
-import { Metadata } from "next"
-import { PortableTextBlock } from "next-sanity"
-import { notFound } from "next/navigation"
-import { WebPage, WithContext } from "schema-dts"
+import { siteUrl } from "@/lib/site-url"
+import { resolveOpenGraphImage } from "@/sanity/lib/utils"
+import { contentMetadata } from "../metadata"
+import { fetchListing, fetchPostsPage, Pagination } from "./listing"
 
-// Add this to make the page static
-export const dynamic = 'force-static'
-
-async function fetchPosts() {
-  return sanityFetch({
-    query: postsQuery,
-    params: {
-      slug: "",
-      from: 0,
-      to: 12,
-    },
-    tags: ["post", "author"]
-  })
-}
-
-async function fetchPage() {
-  return sanityFetch({
-    query: pageQuery,
-    params: {
-      slug: "posts",
-    },
-    tags: ["page"]
-  })
-}
-
-// Function to generate metadata
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await fetchPage()
-  const ogImage = resolveOpenGraphImage(page?.ogImage || page?.coverImage)
-
-  return {
-    ...(page?.title && { title: page?.title }),
-    ...(page?.metaDescription && { description: page.metaDescription }),
-    openGraph: {
-      ...(page?.ogTitle && { title: page.ogTitle }),
-      ...(ogImage && { images: [ogImage] }),
-    },
-    robots: {
-      index: !page?.noIndex
-    },
-    alternates: {
-      canonical: resolveUrl("page", "posts"),
-    }
-  }
+  const page = await fetchListing("preview-plain")
+  return contentMetadata({
+    title: page.title,
+    description: page.metaDescription,
+    socialTitle: page.ogTitle,
+    image: resolveOpenGraphImage(page.ogImage || page.coverImage),
+    pathname: "/posts",
+    noIndex: page.noIndex,
+  })
 }
 
 export default async function PostsPage() {
-  const [page, posts] = await Promise.all([
-    fetchPage(),
-    fetchPosts(),
+  const [page, { posts, hasNext }] = await Promise.all([
+    fetchListing("preview-text"),
+    fetchPostsPage(1, "preview-text"),
   ])
 
-  if (!page) return notFound()
-
-  const openGraphImage = resolveOpenGraphImage(page?.ogImage || page?.coverImage)
+  const image = resolveOpenGraphImage(page.ogImage || page.coverImage)
+  const jsonLd: WithContext<WebPage> = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: page.title,
+    image: image?.url,
+    url: siteUrl("/posts"),
+    description: page.metaDescription ?? undefined,
+  }
 
   return (
     <>
       <div className="container mx-auto space-y-6">
         <h1 className="text-4xl font-bold">{page.title}</h1>
-        <PortableText value={page.content as PortableTextBlock[]} />
+        <PortableText value={page.content} />
         <PostGrid posts={posts} />
+        <Pagination page={1} hasNext={hasNext} />
       </div>
-      <JsonLd jsonLd={{
-        '@context': 'https://schema.org',
-        '@type': 'WebPage',
-        name: page?.title,
-        ...(openGraphImage && {
-          image: openGraphImage?.url
-        }),
-        url: resolveUrl("page", "posts"),
-        ...(page?.metaDescription && { description: page.metaDescription }),
-        ...(page?._updatedAt && { dateModified: page._updatedAt })
-      } as WithContext<WebPage>} />
+      <JsonLd jsonLd={jsonLd} />
     </>
   )
 }

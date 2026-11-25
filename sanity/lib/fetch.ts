@@ -1,73 +1,61 @@
-import type { ClientPerspective, QueryParams } from "next-sanity"
-import { draftMode } from "next/headers"
+import "server-only"
 
-import { client } from "@/sanity/lib/client"
-import { token } from "@/sanity/lib/token"
+import type { ClientPerspective } from "@sanity/client"
+import { perspectiveCookieName } from "@sanity/preview-url-secret/constants"
+import { cookies, draftMode } from "next/headers"
+import { stegaClean, type QueryParams } from "next-sanity"
 
-/**
- * Used to fetch data in Server Components, it has built in support for handling Draft Mode and perspectives.
- * When using the "published" perspective then time-based revalidation is used, set to match the time-to-live on Sanity's API CDN (60 seconds)
- * and will also fetch from the CDN.
- * When using the "drafts" perspective then the data is fetched from the live API and isn't cached, it will also fetch draft content that isn't published yet.
- */
-export async function sanityFetch<const QueryString extends string>({
+import { client } from "./client"
+import { redirectsQuery } from "./queries"
+import type { DocumentTag } from "./tags"
+import { getReadToken } from "./token"
+
+export async function fetchPublishedRedirects() {
+  const result = await client.fetch(redirectsQuery, {}, {
+    perspective: "published",
+    stega: false,
+    cache: "no-store",
+    signal: AbortSignal.timeout(2_000),
+  })
+  return stegaClean(result)
+}
+
+async function getPreviewPerspective(): Promise<ClientPerspective> {
+  const selected = (await cookies()).get(perspectiveCookieName)?.value ?? "drafts"
+  if (selected === "published" || selected === "drafts") return selected
+  const stack = selected.split(",")
+  return stack.every((id) => id !== "raw" && /^[a-zA-Z0-9_-]+$/.test(id))
+    ? stack
+    : "drafts"
+}
+
+export async function sanityFetch<const Query extends string>({
   query,
   params = {},
-  perspective: _perspective,
-  /**
-   * Stega embedded Content Source Maps are used by Visual Editing by both the Sanity Presentation Tool and Vercel Visual Editing.
-   * The Sanity Presentation Tool will enable Draft Mode when loading up the live preview, and we use it as a signal for when to embed source maps.
-   * When outside of the Sanity Studio we also support the Vercel Toolbar Visual Editing feature, which is only enabled in production when it's a Vercel Preview Deployment.
-   */
-  stega: _stega,
-  tags: _tags,
+  mode = "preview-text",
+  tags,
 }: {
-  query: QueryString
-  params?: QueryParams | Promise<QueryParams>
-  perspective?: Omit<ClientPerspective, "raw">
-  stega?: boolean
-  tags?: string[]
+  query: Query
+  params?: QueryParams
+  mode?: "published" | "preview-text" | "preview-plain"
+  tags: DocumentTag[]
 }) {
-  // Determine perspective - only check draftMode if no explicit perspective provided
-  // In Next.js 16, draftMode() can only be called during request time, not during build/static generation
-  let perspective: Omit<ClientPerspective, "raw"> = "published"
-  if (_perspective) {
-    perspective = _perspective
-  } else {
-    // Try to check draft mode, but gracefully fall back if called during build time
-    try {
-      const draft = await draftMode()
-      perspective = draft.isEnabled ? "drafts" : "published"
-    } catch (error) {
-      // draftMode() was called outside request scope (e.g., during build)
-      // Default to "published" perspective
-      perspective = "published"
-    }
-  }
-  const stega =
-    _stega ||
-    perspective === "drafts" ||
-    process.env.VERCEL_ENV === "preview"
-  if (perspective === "drafts") {
-    return client.fetch(query, await params, {
-      stega,
-      perspective: "drafts",
-      // The token is required to fetch draft content
-      token,
-      // The `drafts` perspective isn't available on the API CDN
-      useCdn: false,
-      // And we can't cache the responses as it would slow down the live preview experience
-      next: { revalidate: 0 },
+  if (mode !== "published" && (await draftMode()).isEnabled) {
+    const encode = mode === "preview-text"
+    const result = await client.fetch(query, params, {
+      perspective: await getPreviewPerspective(),
+      token: getReadToken(),
+      stega: encode,
+      cache: "no-store",
     })
+    return encode ? result : stegaClean(result)
   }
-  return client.fetch(query, await params, {
-    stega,
+
+  const result = await client.fetch(query, params, {
     perspective: "published",
-    // The `published` perspective is available on the API CDN
-    useCdn: true,
-    // Only enable Stega in production if it's a Vercel Preview Deployment, as the Vercel Toolbar supports Visual Editing
-    next: {
-      tags: _tags,
-    },
+    stega: false,
+    cache: "force-cache",
+    next: { tags },
   })
+  return stegaClean(result)
 }
