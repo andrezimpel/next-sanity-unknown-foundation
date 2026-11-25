@@ -41,26 +41,24 @@ To use the starter’s original post-writing and excerpt presets, copy `sanity/p
 
 ## Sanity webhook
 
-In Sanity Manage, create a webhook for the deployed `/api/revalidate` endpoint. Use POST, a matching secret, and create, update, and delete triggers. Leave draft and version triggers off. Use API version `2025-07-15` or later.
+With the project ID and dataset in `.env.local`, print the webhook settings for the deployed site:
 
-Use this filter.
-
-```groq
-coalesce(after()._type, before()._type) in ["page", "post", "author", "homePage", "settings", "navigationZone"]
+```sh
+yarn webhook --origin https://www.example.com
 ```
 
-Use this projection.
+Set `SANITY_REVALIDATE_SECRET` to the same value locally and in the deployment. Sign in once with a Sanity account that can manage the project's webhooks, then apply the configuration:
 
-```groq
-{
-  "tags": [coalesce(after()._type, before()._type)],
-  "urlsChanged": before().slug.current != after().slug.current ||
-    count(coalesce(before().previousSlugs, [])[!(@ in coalesce(after().previousSlugs, []))]) > 0 ||
-    count(coalesce(after().previousSlugs, [])[!(@ in coalesce(before().previousSlugs, []))]) > 0
-}
+```sh
+yarn sanity login
+yarn webhook:apply --origin https://www.example.com
 ```
 
-Update the projection on existing webhooks to keep the redirect map cached after content-only edits. Signed payloads containing only `tags`, including `[type, "type:slug"]` and `[type, null]`, still expire redirects on every page or post event. Each accepted delivery marks matching content stale so it can regenerate on the next visit. For a protected staging deployment, send Vercel’s automation bypass header with the webhook. [Sanity webhook setup](https://www.sanity.io/docs/content-lake/webhooks)
+The command creates a signed document webhook for `/api/revalidate`, or updates and enables the existing webhook for that dataset and URL. It subscribes to published creates, updates, and deletes. Rerun it after changing the filter, projection, or signing secret. For automation, supply a server-side `SANITY_AUTH_TOKEN` with webhook read and create permissions and run `yarn webhook --apply --origin https://www.example.com`. [Sanity Webhooks API](https://www.sanity.io/docs/http-reference/webhooks)
+
+Both commands default to `SITE_URL` when you omit `--origin`. For staging, pass its HTTPS origin explicitly and select its dataset using `NEXT_PUBLIC_SANITY_DATASET`. For a protected Vercel deployment, set `VERCEL_AUTOMATION_BYPASS_SECRET` in the setup environment to include the bypass header. Printed settings use placeholders for secrets.
+
+Older signed payloads containing only `tags`, including `[type, "type:slug"]` and `[type, null]`, still invalidate content. Applying the current projection keeps the redirect map cached after content-only edits.
 
 ## Publishing for search
 

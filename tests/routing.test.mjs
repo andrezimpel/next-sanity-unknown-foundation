@@ -1,5 +1,5 @@
 import assert from "node:assert/strict"
-import { readFile } from "node:fs/promises"
+import { webhookConfig } from "../scripts/webhook-config.mjs"
 import { test } from "node:test"
 import { evaluate, parse } from "groq-js"
 
@@ -49,11 +49,10 @@ test("webhook tags match the document dependency contract", () => {
   }
 })
 
-test("the documented Sanity webhook delivers every supported create, update and delete", async () => {
-  const readme = await readFile(new URL("../README.md", import.meta.url), "utf8")
-  const section = readme.split("## Sanity webhook\n")[1].split("\n## ")[0]
-  const [filter, projection] = Array.from(section.matchAll(/```groq\n([\s\S]*?)\n```/g),
-    ([, query]) => parse(query, { mode: "delta" }))
+test("the generated Sanity webhook delivers every supported create, update and delete", async () => {
+  const { rule } = webhookConfig("https://www.example.com", "production")
+  const filter = parse(rule.filter, { mode: "delta" })
+  const projection = parse(rule.projection, { mode: "delta" })
   for (const type of [...documentTags, "unrelated"]) {
     const doc = { _type: type, slug: { current: "example" } }
     for (const event of [{ after: doc }, { before: doc, after: doc }, { before: doc }]) {
